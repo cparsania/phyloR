@@ -9,7 +9,7 @@ genbank2uid_tbl(x, ...)
 \arguments{
 \item{x}{vector of genBank accession alphanumeric string, or a gi numeric string \code{(x)}.}
 
-\item{...}{other parameters to be passed to taxize::genbank2uid}
+\item{...}{other parameters to be passed to \code{taxize::genbank2uid}}
 }
 \value{
 a tbl with colnames x, taxid, class, match, multiple_matches, pattern_match, uri, name
