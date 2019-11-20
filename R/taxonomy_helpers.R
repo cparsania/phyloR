@@ -13,15 +13,15 @@
 #' @examples
 #' \dontrun{
 #' x <- c("XP_022900619.1", "XP_022900618.1", "XP_018333511.1", "XP_018573075.1")
-#' genbank2uid_tbl(x)
+#' genbank2uid_tbl(x = x)
 #' }
 genbank2uid_tbl <- function(x , ...){
 
         start_time <- Sys.time()
         uid_list <- taxize::genbank2uid(x , ...)
-        uid_tbl <- tibble::tibble(x = x, taxid = unlist(cc)) %>%
-                dplyr::bind_cols( map_df(cc , attributes))
-        time_taken <- tt - Sys.time()
+        uid_tbl <- tibble::tibble(x = x, taxid = unlist(uid_list)) %>%
+                dplyr::bind_cols( map_df(uid_list , attributes))
+        time_taken <- start_time - Sys.time()
         message(time_taken)
         return(uid_tbl)
 

@@ -5,3 +5,5 @@ usethis::use_package("taxize" ,min_version = "0.9.91")
 
 devtools::document()
 
+
+devtools::load_all()

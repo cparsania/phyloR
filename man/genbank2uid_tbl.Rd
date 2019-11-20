@@ -20,6 +20,6 @@ Given a genBank accession alphanumeric string, or a gi numeric string \code{(x)}
 \examples{
 \dontrun{
 x <- c("XP_022900619.1", "XP_022900618.1", "XP_018333511.1", "XP_018573075.1")
-genbank2uid_tbl(x)
+genbank2uid_tbl(x = x)
 }
 }
