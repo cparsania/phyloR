@@ -18,12 +18,12 @@
 #' }
 genbank2uid_tbl <- function(x , ...){
 
-        start_time <- Sys.time()
+        start_time <- lubridate::now()
         uid_list <- taxize::genbank2uid(x ,  ...)
         uid_tbl <- tibble::tibble(x = x, taxid = unlist(uid_list)) %>%
                 dplyr::bind_cols( purrr::map_df(uid_list , attributes))
-        time_taken <- start_time - Sys.time()
-        message(time_taken)
+        time_taken <- start_time - lubridate::now()
+        cat_green_tick("done. ", " Time taken " , time_taken)
         return(uid_tbl)
 
 }
@@ -49,6 +49,7 @@ genbank2uid_tbl <- function(x , ...){
 #' @importFrom dplyr select
 #' @importFrom rlang !!
 #' @importFrom rlang :=
+#' @importFrom lubridate now
 #' @examples
 #' \dontrun{
 #' x <- c(166361, 166361, 224129, 217634)
