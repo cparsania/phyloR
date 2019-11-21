@@ -54,7 +54,7 @@ Filter blast hits
  f <- system.file("extdata","example_blast_output_01.txt", package = "phyloR")
  d <- readr::read_delim(f, delim ="\t" , col_names = F)
  colnames(d) <- phyloR::get_blast_outformat_7_colnames()
- filtered <- filter_blast_hits(d , query_cov = 90 , identity = 60, query_length = 249, evalue = 1e-6)
+ filtered <- filter_blast_hits(d , query_cov = 90 , identity = 40, query_length = 249, evalue = 1e-6)
 }
 
 
