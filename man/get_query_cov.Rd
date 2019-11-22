@@ -20,7 +20,5 @@ A numeric
 Given a sequence start, end and length coverage can be calculated.
 }
 \seealso{
-get_query_cov
-
-get_subj_cov
+\link{get_subj_cov}
 }

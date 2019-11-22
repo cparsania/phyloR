@@ -150,7 +150,7 @@ get_taxon_rank <-  function(x , rank = "kingdom"){
 #'  colnames(d) <- phyloR::get_blast_outformat_7_colnames()
 #'  filtered <- filter_blast_hits(d , query_cov = 90 , identity = 40, query_length = 249, evalue = 1e-6)
 #' }
-#'
+#' @seealso \link{get_blast_outformat_7_colnames}
 #'
 filter_blast_hits <- function(blast_tbl ,
                               evalue = NULL,
@@ -295,8 +295,7 @@ get_cov <- function(start , end , len){
 #' @param qend A numeric denoting query end
 #' @param qlen A numeric denoting query length
 #' @export
-#' @seealso get_query_cov
-#' @seealso get_subj_cov
+#' @seealso \link{get_subj_cov}
 #' @return A numeric
 #'
 get_query_cov <- function(qstart , qend , qlen){
@@ -312,8 +311,7 @@ get_query_cov <- function(qstart , qend , qlen){
 #' @param send A numeric denoting subject end
 #' @param slen A numeric denoting subject length
 #' @export
-#' @seealso get_query_cov
-#' @seealso get_subj_cov
+#' @seealso \link{get_query_cov}
 #' @return A numeric
 #'
 get_subj_cov <- function(sstart , send , slen){

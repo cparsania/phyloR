@@ -56,6 +56,7 @@ Given a tbl of blast output format 7, hits can be filtered by \code{evalue}, \co
  colnames(d) <- phyloR::get_blast_outformat_7_colnames()
  filtered <- filter_blast_hits(d , query_cov = 90 , identity = 40, query_length = 249, evalue = 1e-6)
 }
-
-
+}
+\seealso{
+\link{get_blast_outformat_7_colnames}
 }
