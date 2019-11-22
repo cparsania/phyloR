@@ -1,0 +1,28 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# phyloR
+
+<!-- badges: start -->
+```{r , include = FALSE}
+cat(
+#badger::badge_devel("cparsania/phyloR" , color = "blue"),
+badger::badge_lifecycle()
+)
+```
+<!-- badges: end -->
+
+The goal of phyloR is to perform the phylogenetic analysis from the blast output format 7  
+
