@@ -7,7 +7,22 @@
 get_blast_outformat_7_colnames()
 }
 \value{
-A character vector
+A character vector with values below
+\itemize{
+\item query_acc_ver
+\item subject_acc_ver
+\item identity
+\item alignment_length
+\item mismatches
+\item gap_opens
+\item q_start
+\item q_end
+\item s_start
+\item s_end
+\item evalue
+\item bit_score
+\item positives
+}
 }
 \description{
 Get blast output format 7 column names

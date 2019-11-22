@@ -2,7 +2,7 @@
 % Please edit documentation in R/blast_result_parser.R
 \name{get_query_cov}
 \alias{get_query_cov}
-\title{Calculate query coverage.}
+\title{Calculate \% query coverage.}
 \usage{
 get_query_cov(qstart, qend, qlen)
 }
@@ -17,5 +17,10 @@ get_query_cov(qstart, qend, qlen)
 A numeric
 }
 \description{
-Calculate query coverage.
+Given a sequence start, end and length coverage can be calculated.
+}
+\seealso{
+get_query_cov
+
+get_subj_cov
 }

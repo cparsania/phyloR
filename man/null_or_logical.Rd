@@ -7,7 +7,7 @@
 null_or_logical(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{a value to be checked for logical or NULL}
 }
 \value{
 
@@ -15,3 +15,4 @@ null_or_logical(x)
 \description{
 Check value NULL or LOGICAL
 }
+\keyword{internal}

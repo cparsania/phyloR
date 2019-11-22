@@ -7,7 +7,7 @@
 null_or_character(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{a value to be checked for character or NULL}
 }
 \value{
 
@@ -15,3 +15,4 @@ null_or_character(x)
 \description{
 Check value NULL or character
 }
+\keyword{internal}

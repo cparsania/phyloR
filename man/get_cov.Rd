@@ -2,7 +2,7 @@
 % Please edit documentation in R/blast_result_parser.R
 \name{get_cov}
 \alias{get_cov}
-\title{Calculate coverage}
+\title{Calculate sequence coverage}
 \usage{
 get_cov(start, end, len)
 }
@@ -17,5 +17,11 @@ get_cov(start, end, len)
 A numeric
 }
 \description{
-Calculate coverage
+Calculate sequence coverage
 }
+\seealso{
+get_query_cov
+
+get_subj_cov
+}
+\keyword{internal}

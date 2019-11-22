@@ -7,7 +7,7 @@
 null_or_numeric(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{a value to be checked for numeric or NULL}
 }
 \value{
 
@@ -15,3 +15,4 @@ null_or_numeric(x)
 \description{
 Check value NULL or Numeric
 }
+\keyword{internal}

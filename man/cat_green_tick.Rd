@@ -15,3 +15,4 @@ cat_green_tick(...)
 \description{
 Print green tick on terminal. Wrapper function on  cli::cat_bullet
 }
+\keyword{internal}

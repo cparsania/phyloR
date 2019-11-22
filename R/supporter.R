@@ -2,7 +2,7 @@
 #' Print green tick on terminal. Wrapper function on  cli::cat_bullet
 #'
 #' @param ... Other arguments to be passed to \code{cli::cat_bullet}
-#'
+#' @keywords internal
 #' @return
 #'
 cat_green_tick <- function (...){
@@ -13,8 +13,8 @@ cat_green_tick <- function (...){
 
 #' Check value NULL or Numeric
 #'
-#' @param x
-#'
+#' @param x a value to be checked for numeric or NULL
+#' @keywords internal
 #' @return
 #'
 null_or_numeric <- function(x){
@@ -29,8 +29,8 @@ null_or_numeric <- function(x){
 
 #' Check value NULL or character
 #'
-#' @param x
-#'
+#' @param x a value to be checked for character or NULL
+#' @keywords internal
 #' @return
 #'
 null_or_character <- function(x){
@@ -45,8 +45,8 @@ null_or_character <- function(x){
 
 #' Check value NULL or LOGICAL
 #'
-#' @param x
-#'
+#' @param x a value to be checked for logical or NULL
+#' @keywords internal
 #' @return
 #'
 null_or_logical <- function(x){

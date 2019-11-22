@@ -47,7 +47,7 @@ It can be assigned using the function \code{get_blast_outformat_7_colnames()}}
 a tbl of filtered blast hits.
 }
 \description{
-Filter blast hits
+Given a tbl of blast output format 7, hits can be filtered by \code{evalue}, \code{bit_score}, \code{query_cov}, \code{identity} and  \code{query_length}
 }
 \examples{
 \dontrun{

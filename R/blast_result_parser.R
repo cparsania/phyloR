@@ -31,12 +31,38 @@ genbank2uid_tbl <- function(x , ...){
 
 
 
-#' Title
+#' Get phylogenetic rank for a given ncbi taxonomy id.
 #'
-#' @param x a vector of valid ncbi taxid
-#' @param rank default "kingdom". Can be one of the "no rank", "superkingdom", "kingdom", "phylum", "subphylum", "class", "subclass", "infraclass", "cohort", "order", "suborder", "infraorder", "superfamily", "family", "subfamily", "genus", "species", "tribe"
 #'
-#' @return a tbl
+#' @param x a vector of valid ncbi taxonomy id.
+#' @param rank a character string indicating required phylogenetic rank. Default "kingdom". Can be one of the followewing
+#' \enumerate{
+#' \item superkingdom
+#' \item kingdom
+#' \item phylum
+#' \item subphylum
+#' \item class
+#' \item subclass
+#' \item infraclass
+#' \item cohort
+#' \item order
+#' \item suborder
+#' \item infraorder
+#' \item superfamily
+#' \item family
+#' \item subfamily
+#' \item genus
+#' \item species
+#' \item tribe
+#' \item no rank
+#' }
+#' @return a tbl with the below column.
+#' \enumerate{
+#' \item query_taxon
+#' \item kingdom
+#' \item kingdom_id
+#' \item rank
+#' }
 #' @export
 #'
 #' @importFrom tibble tibble
@@ -82,6 +108,8 @@ get_taxon_rank <-  function(x , rank = "kingdom"){
 
 
 #' Filter blast hits
+#'
+#' Given a tbl of blast output format 7, hits can be filtered by \code{evalue}, \code{bit_score}, \code{query_cov}, \code{identity} and  \code{query_length}
 #'
 #' @param blast_tbl an object of class tbl from blast output format 7. Column names must be identical to the given below
 #' \enumerate{
@@ -197,7 +225,22 @@ filter_blast_hits <- function(blast_tbl ,
 
 #' Get blast output format 7 column names
 #'
-#' @return A character vector
+#' @return A character vector with values below
+#' \itemize{
+#' \item query_acc_ver
+#' \item subject_acc_ver
+#' \item identity
+#' \item alignment_length
+#' \item mismatches
+#' \item gap_opens
+#' \item q_start
+#' \item q_end
+#' \item s_start
+#' \item s_end
+#' \item evalue
+#' \item bit_score
+#' \item positives
+#' }
 #' @export
 #'
 #' @examples
@@ -226,12 +269,15 @@ get_blast_outformat_7_colnames <- function(){
 
 
 
-#' Calculate coverage
+#' Calculate sequence coverage
+#'
 #'
 #' @param start A numeric denoting start
 #' @param end A numeric denoting end
 #' @param len A numeric denoting length
-#'
+#' @seealso get_query_cov
+#' @seealso get_subj_cov
+#' @keywords internal
 #' @return A numeric
 #'
 get_cov <- function(start , end , len){
@@ -241,12 +287,16 @@ get_cov <- function(start , end , len){
 }
 
 
-#' Calculate query coverage.
+#' Calculate \% query coverage.
+#'
+#' Given a sequence start, end and length coverage can be calculated.
 #'
 #' @param qstart A numeric denoting query start
 #' @param qend A numeric denoting query end
 #' @param qlen A numeric denoting query length
 #' @export
+#' @seealso get_query_cov
+#' @seealso get_subj_cov
 #' @return A numeric
 #'
 get_query_cov <- function(qstart , qend , qlen){
@@ -254,12 +304,16 @@ get_query_cov <- function(qstart , qend , qlen){
 }
 
 
-#' Calculate subject coverage.
+#' Calculate \% subject coverage.
+#'
+#' Given a sequence start, end and length coverage can be calculated.
 #'
 #' @param sstart A numeric denoting subject start
 #' @param send A numeric denoting subject end
 #' @param slen A numeric denoting subject length
 #' @export
+#' @seealso get_query_cov
+#' @seealso get_subj_cov
 #' @return A numeric
 #'
 get_subj_cov <- function(sstart , send , slen){

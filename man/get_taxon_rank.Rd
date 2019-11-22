@@ -2,20 +2,46 @@
 % Please edit documentation in R/blast_result_parser.R
 \name{get_taxon_rank}
 \alias{get_taxon_rank}
-\title{Title}
+\title{Get phylogenetic rank for a given ncbi taxonomy id.}
 \usage{
 get_taxon_rank(x, rank = "kingdom")
 }
 \arguments{
-\item{x}{a vector of valid ncbi taxid}
+\item{x}{a vector of valid ncbi taxonomy id.}
 
-\item{rank}{default "kingdom". Can be one of the "no rank", "superkingdom", "kingdom", "phylum", "subphylum", "class", "subclass", "infraclass", "cohort", "order", "suborder", "infraorder", "superfamily", "family", "subfamily", "genus", "species", "tribe"}
+\item{rank}{a character string indicating required phylogenetic rank. Default "kingdom". Can be one of the followewing
+\enumerate{
+\item superkingdom
+\item kingdom
+\item phylum
+\item subphylum
+\item class
+\item subclass
+\item infraclass
+\item cohort
+\item order
+\item suborder
+\item infraorder
+\item superfamily
+\item family
+\item subfamily
+\item genus
+\item species
+\item tribe
+\item no rank
+}}
 }
 \value{
-a tbl
+a tbl with the below column.
+\enumerate{
+\item query_taxon
+\item kingdom
+\item kingdom_id
+\item rank
+}
 }
 \description{
-Title
+Get phylogenetic rank for a given ncbi taxonomy id.
 }
 \examples{
 \dontrun{

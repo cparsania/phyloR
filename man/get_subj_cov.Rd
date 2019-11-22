@@ -2,7 +2,7 @@
 % Please edit documentation in R/blast_result_parser.R
 \name{get_subj_cov}
 \alias{get_subj_cov}
-\title{Calculate subject coverage.}
+\title{Calculate \% subject coverage.}
 \usage{
 get_subj_cov(sstart, send, slen)
 }
@@ -17,5 +17,10 @@ get_subj_cov(sstart, send, slen)
 A numeric
 }
 \description{
-Calculate subject coverage.
+Given a sequence start, end and length coverage can be calculated.
+}
+\seealso{
+get_query_cov
+
+get_subj_cov
 }
