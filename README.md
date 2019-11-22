@@ -7,5 +7,6 @@
 
 <!-- badges: end -->
 
-The goal of phyloR is to perform the phylogenetic analysis from the
-blast output format 7
+phyloR is an R package. The goal of phyloR is to perform the
+phylogenetic analysis from the result of tabular blast output (–outfmt 7
+)
