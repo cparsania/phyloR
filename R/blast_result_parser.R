@@ -321,3 +321,7 @@ get_subj_cov <- function(sstart , send , slen){
 
 
 
+## add functions : count blast hits by perticular taxon rank , for e.g count by species, kingdom,  family etc etc.
+
+
+
