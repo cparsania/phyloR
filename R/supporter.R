@@ -4,7 +4,7 @@
 #' @param ... Other arguments to be passed to \code{cli::cat_bullet}
 #' @keywords internal
 #' @return
-#'
+#' @importFrom cli cat_bullet
 cat_green_tick <- function (...){
 
         cli::cat_bullet(..., bullet = "tick", bullet_col = "green")

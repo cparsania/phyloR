@@ -321,6 +321,42 @@ get_subj_cov <- function(sstart , send , slen){
 
 
 
+#' Remove redundancy from blast tabular output
+#'
+#' @description Given the output of blast tabular format in a tbl, it removes redundant hits by subject hit ids. For each redundant hit longest hit will be retuned.
+#' @param blast_output_tbl an object of class tbl containing blast tabular output
+#' @param subject_acc_colname a string denoting a column of subject hits in a \code{blast_output_tbl}. Default "subject_acc_ver"
+#' @param alignment_length_colname a string denoting a column of alignment length in a \code{blast_output_tbl}. Default "alignment_length"
+#'
+#' @return a tbl
+#' @export
+#' @importFrom tibble is_tibble
+#' @importFrom rlang sym
+#' @importFrom dplyr group_by
+#' @importFrom dplyr arrange
+#' @importFrom dplyr slice
+#' @examples
+remove_redundancy <-  function(blast_output_tbl ,
+                               subject_acc_colname = "subject_acc_ver" ,
+                               alignment_length_colname = "alignment_length"){
+
+        if(!tibble::is_tibble(blast_output_tbl)){
+                stop("blast_output_tbl must be a class of tibble")
+        }
+
+        subject_acc_colname = rlang::sym(subject_acc_colname)
+        alignment_length_colname = rlang::sym(alignment_length_colname)
+
+        blast_output_tbl %>%
+                dplyr::group_by(!!subject_acc_colname) %>%
+                dplyr::arrange(!!alignment_length_colname) %>%
+                dplyr::slice(1)
+
+
+}
+
+
+
 ## add functions : count blast hits by perticular taxon rank , for e.g count by species, kingdom,  family etc etc.
 
 
