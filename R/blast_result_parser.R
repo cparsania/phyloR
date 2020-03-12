@@ -35,7 +35,7 @@ genbank2uid_tbl <- function(x , ...){
 #'
 #'
 #' @param x a vector of valid ncbi taxonomy id.
-#' @param rank a character string indicating required phylogenetic rank. Default "kingdom". Can be one of the followewing
+#' @param rank a character string indicating required phylogenetic rank. Default "kingdom". Can be one of the following
 #' \enumerate{
 #' \item superkingdom
 #' \item kingdom
@@ -324,6 +324,7 @@ get_subj_cov <- function(sstart , send , slen){
 #' Remove redundancy from blast tabular output
 #'
 #' @description Given the output of blast tabular format in a tbl, it removes redundant hits by subject hit ids. For each redundant hit longest hit will be retuned.
+#'
 #' @param blast_output_tbl an object of class tbl containing blast tabular output
 #' @param subject_acc_colname a string denoting a column of subject hits in a \code{blast_output_tbl}. Default "subject_acc_ver"
 #' @param alignment_length_colname a string denoting a column of alignment length in a \code{blast_output_tbl}. Default "alignment_length"
@@ -352,12 +353,151 @@ remove_redundancy <-  function(blast_output_tbl ,
                 dplyr::arrange(!!alignment_length_colname) %>%
                 dplyr::slice(1)
 
-
 }
 
 
 
-## add functions : count blast hits by perticular taxon rank , for e.g count by species, kingdom,  family etc etc.
+
+## given the blast hits in tabular format add taxonomy annotations
+
+#' Add taxonomy annotations to blast tabular output
+#'
+#' @description Given the blast output (\code{-outfmt 7}) in a tabular format add taxonomic annotations to each subject hit.
+#' @param blast_output_tbl a tbl of blast output format 7 (\code{-outfmt 7})
+#' @param subject_acc_colname a string (default : "subject_acc_ver")denoting column name of subject_acc_colname.
+#' @param ncbi_acc_key user specific ENTREZ api key. Get one via \code{taxize::use_entrez()}
+#' @param taxonomy_level a string indicating level of taxonomy to be mapped. Can be one of the following
+#' \enumerate{
+#' \item superkingdom
+#' \item kingdom
+#' \item phylum
+#' \item subphylum
+#' \item class
+#' \item subclass
+#' \item infraclass
+#' \item cohort
+#' \item order
+#' \item suborder
+#' \item infraorder
+#' \item superfamily
+#' \item family
+#' \item subfamily
+#' \item genus
+#' \item species
+#' \item tribe
+#' \item no rank
+#' }
+#' @param map_superkindom logical (default TRUE). map superkingdom if kingdom not found. Valid only when taxonomy_level == "kingdom".
+#'
+#' @return
+#' @export
+#' @importFrom tibble is_tibble
+#' @importFrom rlang arg_match
+#' @importFrom cli cat_rule cli_alert_info cli_alert
+#' @importFrom dplyr pull select bind_rows select rename left_join right_join
+#' @importFrom purrr map
+#' @importFrom TidyWrappers tbl_keep_rows_NA_any
+#' @examples
+add_taxonomy_columns <- function(blast_output_tbl,
+                                 subject_acc_colname = "subject_acc_ver",
+                                 ncbi_acc_key =NULL,
+                                 taxonomy_level = "kingdom",
+                                 map_superkindom = TRUE){
+
+        ## validate user inputs
+        ## blast_output_tbl must be tbl
+        if(!tibble::is_tibble(blast_output_tbl)){
+                stop("blast_output_tbl must be a class of tibble")
+        }
+
+        ## taxonomy_level must be one one of these
+        rlang::arg_match(taxonomy_level  ,
+                         c("no rank", "superkingdom", "kingdom", "phylum", "subphylum", "class", "subclass", "infraclass", "cohort", "order", "suborder", "infraorder", "superfamily", "family", "subfamily", "genus", "species", "tribe"))
+
+
+        ## blast_output_tbl mus not contain column names 'taxid' and taxonomy_level
+        if(any(colnames(blast_output_tbl) %in% c(taxonomy_level))) {
+
+                stop("Column '", taxonomy_level ,"'" , " must not present in 'blast_output_tbl'.",
+                     " Either remove it or rename it")
+
+        }
+
+        is_taxid_present <- FALSE
+        if(any(colnames(blast_output_tbl) %in% "taxid")) {
+                is_taxid_present <- TRUE
+                cli::cat_rule("WARNING")
+                cli::cli_alert_info("As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.")
+                cli::cli_alert_info("To perform new 'taxid' search either remove  or rename columnn 'taxid'." )
+                cli::cat_rule("WARNING ENDS")
+        }
+
+        ## get subject accession
+        subject_acc_id <- blast_output_tbl %>%
+                dplyr::pull(subject_acc_ver) %>%
+                unique()
+
+
+        if(is_taxid_present){
+                taxon_data_sub <- blast_output_tbl %>%
+                        dplyr::select(subject_acc_ver , taxid)
+        } else{
+                ## split subject accession vector in chunks
+                ## splitting long vector of subject id in chunks is necessary as ping many ids at a time to NCBI frequently throws error
+                chunk_max_length = 20 ## each chunk can be maximum of length "chunk_max_length"
+                chunk_length <-   length(subject_acc_id) / chunk_max_length
+                subject_acc_id_splts <- split(subject_acc_id , f = rep(1:chunk_length, length.out = length(subject_acc_id)))
+
+                cli::cli_rule("'taxid' apping starts")
+                cli::cli_alert(paste("Number of iterations to take place : "  , chunk_length ,sep = " "))
+
+                ## get taxid for each subject hit
+                taxon_data <- purrr::map(subject_acc_id_splts ,
+                                         ~ phyloR::genbank2uid_tbl(..1,key = ncbi_acc_key) )
+
+                cat_green_tick("Mapping done.")
+
+                ## list of tbl to tbl
+                taxon_data_sub <- taxon_data %>%
+                        dplyr::bind_rows() %>%
+                        dplyr::select(1,2) %>%
+                        dplyr::rename("subject_acc_ver" = "x")
+        }
+
+
+        ## get kingdom
+        taxid_to_taxon <- phyloR::get_taxon_rank(taxon_data_sub$taxid , rank = taxonomy_level) %>%
+                dplyr::select(1,2)
+
+        ##if kingdom is NA map superkingdom
+        if(map_superkindom && taxonomy_level=="kingdom"){
+                if(nrow(taxid_to_taxon %>% TidyWrappers::tbl_keep_rows_NA_any()) >=1 ){
+                        skingdom_query <- taxid_to_taxon %>% TidyWrappers::tbl_keep_rows_NA_any() %>% dplyr::pull(query_taxon)
+                        taxid_to_skingdom <- phyloR::get_taxon_rank(skingdom_query , rank = "superkingdom") %>% dplyr::select(1,2)
+                        taxid_to_taxon <- taxid_to_taxon %>% dplyr::left_join(taxid_to_skingdom , by = "query_taxon") %>%
+                                dplyr::mutate(kingdom = dplyr::coalesce(kingdom, superkingdom)) %>% dplyr::select(1,2)
+                }
+        }
+
+        ## add column taxid if it is not present in original data
+        if(!is_taxid_present){
+                blast_output_tbl <- blast_output_tbl %>%
+                        dplyr::left_join(taxon_data_sub , by = c("subject_acc_ver"))
+        }
+
+        ## add user asked taxonomy_level
+        blast_output_tbl <- blast_output_tbl %>%
+                dplyr::left_join(taxid_to_taxon , by = c("taxid" = "query_taxon"))
+
+        return(blast_output_tbl)
+}
+
+
+
+
+
+
+
 
 
 

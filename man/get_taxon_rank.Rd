@@ -9,7 +9,7 @@ get_taxon_rank(x, rank = "kingdom")
 \arguments{
 \item{x}{a vector of valid ncbi taxonomy id.}
 
-\item{rank}{a character string indicating required phylogenetic rank. Default "kingdom". Can be one of the followewing
+\item{rank}{a character string indicating required phylogenetic rank. Default "kingdom". Can be one of the following
 \enumerate{
 \item superkingdom
 \item kingdom
