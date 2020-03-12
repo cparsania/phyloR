@@ -448,7 +448,7 @@ add_taxonomy_columns <- function(blast_output_tbl,
                 chunk_length <-   length(subject_acc_id) / chunk_max_length
                 subject_acc_id_splts <- split(subject_acc_id , f = rep(1:chunk_length, length.out = length(subject_acc_id)))
 
-                cli::cli_rule("'taxid' apping starts")
+                cli::cli_rule("'taxid' mapping starts")
                 cli::cli_alert(paste("Number of iterations to take place : "  , chunk_length ,sep = " "))
 
                 ## get taxid for each subject hit
