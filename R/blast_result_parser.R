@@ -109,9 +109,9 @@ get_taxon_rank <-  function(x , rank = "kingdom"){
 
 #' Filter blast hits
 #'
-#' Given a tbl of blast output format 7, hits can be filtered by \code{evalue}, \code{bit_score}, \code{query_cov}, \code{identity} and  \code{query_length}
+#' Given a tbl of blast output format 7 hits can be filtered by \code{evalue}, \code{bit_score}, \code{query_cov}, \code{identity} and  \code{query_length}
 #'
-#' @param blast_tbl an object of class tbl from blast output format 7. Column names must be identical to the given below
+#' @param blast_tbl an object of class tbl from blast output format 7. It must contains below columns.
 #' \enumerate{
 #' \item query_acc_ver
 #' \item subject_acc_ver
@@ -128,7 +128,7 @@ get_taxon_rank <-  function(x , rank = "kingdom"){
 #' \item positives
 #' }
 #'
-#' It can be assigned using the function \code{get_blast_outformat_7_colnames()}
+#' Column names can be assigned using the function \code{get_blast_outformat_7_colnames()}
 #'
 #' @param evalue a numeric value; default NULL. Only hits having evalue <= than given will be retained.
 #' @param bit_score a numeric value; default NULL. Only hits having bit_score >= than given will be retained.

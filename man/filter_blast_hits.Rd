@@ -14,7 +14,7 @@ filter_blast_hits(
 )
 }
 \arguments{
-\item{blast_tbl}{an object of class tbl from blast output format 7. Column names must be identical to the given below
+\item{blast_tbl}{an object of class tbl from blast output format 7. It must contains below columns.
 \enumerate{
 \item query_acc_ver
 \item subject_acc_ver
@@ -31,7 +31,7 @@ filter_blast_hits(
 \item positives
 }
 
-It can be assigned using the function \code{get_blast_outformat_7_colnames()}}
+Column names can be assigned using the function \code{get_blast_outformat_7_colnames()}}
 
 \item{evalue}{a numeric value; default NULL. Only hits having evalue <= than given will be retained.}
 
@@ -47,7 +47,7 @@ It can be assigned using the function \code{get_blast_outformat_7_colnames()}}
 a tbl of filtered blast hits.
 }
 \description{
-Given a tbl of blast output format 7, hits can be filtered by \code{evalue}, \code{bit_score}, \code{query_cov}, \code{identity} and  \code{query_length}
+Given a tbl of blast output format 7 hits can be filtered by \code{evalue}, \code{bit_score}, \code{query_cov}, \code{identity} and  \code{query_length}
 }
 \examples{
 \dontrun{
