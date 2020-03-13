@@ -15,7 +15,7 @@ genbank2uid_tbl(x, ...)
 a tbl with colnames x, taxid, class, match, multiple_matches, pattern_match, uri, name
 }
 \description{
-Given a genBank accession alphanumeric string, or a gi numeric string \code{(x)}, it returns tibble of taxid, name and other columns.
+Given a genBank accession alphanumeric string or a gi numeric string \code{(x)}, it returns tibble of taxid, name and other related columns.
 }
 \examples{
 \dontrun{

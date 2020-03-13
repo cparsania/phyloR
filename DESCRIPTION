@@ -1,6 +1,6 @@
 Package: phyloR
 Type: Package
-Title: Given the blast results, perorm downstream phylogenetic analysis. 
+Title: Clean blast results for downstream phyloegentic analysis. 
 Version: 0.0.1
 Author: Chirag Parsania
 Maintainer: Chirag Parsania <chirag.parsania@gmail.com>

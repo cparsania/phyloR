@@ -1,7 +1,7 @@
 
 #' Wrapper function around taxize::genbank2uid.
 #'
-#' Given a genBank accession alphanumeric string, or a gi numeric string \code{(x)}, it returns tibble of taxid, name and other columns.
+#' Given a genBank accession alphanumeric string or a gi numeric string \code{(x)}, it returns tibble of taxid, name and other related columns.
 #' @param x vector of genBank accession alphanumeric string, or a gi numeric string \code{(x)}.
 #' @param ... other parameters to be passed to \code{taxize::genbank2uid}
 #'
@@ -321,9 +321,9 @@ get_subj_cov <- function(sstart , send , slen){
 
 
 
-#' Remove redundancy from blast tabular output
+#' Remove redundant hits from blast tabular output
 #'
-#' @description Given the output of blast tabular format in a tbl, it removes redundant hits by subject hit ids. For each redundant hit longest hit will be retuned.
+#' @description Given the output of blast tabular format in a tbl, it removes redundancy subject hit accession. For each redundant hit longest hit will be returned.
 #'
 #' @param blast_output_tbl an object of class tbl containing blast tabular output
 #' @param subject_acc_colname a string denoting a column of subject hits in a \code{blast_output_tbl}. Default "subject_acc_ver"
@@ -337,7 +337,7 @@ get_subj_cov <- function(sstart , send , slen){
 #' @importFrom dplyr arrange
 #' @importFrom dplyr slice
 #' @examples
-remove_redundancy <-  function(blast_output_tbl ,
+remove_redundant_hits <-  function(blast_output_tbl ,
                                subject_acc_colname = "subject_acc_ver" ,
                                alignment_length_colname = "alignment_length"){
 
