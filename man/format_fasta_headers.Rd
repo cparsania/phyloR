@@ -15,5 +15,5 @@ format_fasta_headers(fasta_file = NULL, keep_alignemnt_coord = TRUE)
 sequences as an object of class \code{Biostrings}
 }
 \description{
-given the fasta file obtained from NCBI blast output, format the sequence headers
+format the sequence headers for fasta file obtained from NCBI blast output
 }

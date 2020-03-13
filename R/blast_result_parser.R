@@ -499,7 +499,7 @@ subset_fasta <- function(fasta_file){
 
 
 #' format fasta headers
-#' @description given the fasta file obtained from NCBI blast output, format the sequence headers
+#' @description format the sequence headers for fasta file obtained from NCBI blast output
 #' @param fasta_file string denoting full path of a fasta file.
 #' @param keep_alignemnt_coord logical (default : TRUE) decides whether alignment coordinates to keep in headers or not. When TRUE header must contains alignment coordinates in this format \code{:([:digit:]+-[:digit:]+)}. (e.g. CEJ90625.1:1-252)
 #' @importFrom Biostrings readBStringSet
