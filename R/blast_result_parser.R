@@ -493,9 +493,63 @@ add_taxonomy_columns <- function(blast_output_tbl,
 }
 
 
+subset_fasta <- function(fasta_file){
+
+}
 
 
+#' format fasta headers
+#' @description given the fasta file obtained from NCBI blast output, format the sequence headers
+#' @param fasta_file string denoting full path of a fasta file.
+#' @param keep_alignemnt_coord logical (default : TRUE) decides whether alignment coordinates to keep in headers or not. When TRUE header must contains alignment coordinates in this format \code{:([:digit:]+-[:digit:]+)}. (e.g. CEJ90625.1:1-252)
+#' @importFrom Biostrings readBStringSet
+#' @importFrom tibble tibble
+#' @importFrom purrr map
+#' @importFrom stringr str_match_all
+#' @importFrom tidyr unnest_wider
+#' @importFrom dplyr select rename mutate_all mutate
+#' @importFrom stringr str_match str_trim str_remove str_replace_all
+#' @importFrom glue glue_data
+#' @return sequences as an object of class \code{Biostrings}
+#' @export
+#'
+#' @examples
+format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
 
+        ## validate inputs
+        if(!file.exists(fasta_file)){
+            stop("fasta_file does not exist.")
+        }
+
+        fa_seq <- Biostrings::readBStringSet(fasta_file)
+        fa_headers <- names(fa_seq)
+
+        fa_headers_dislocate <- fa_headers %>% tibble::tibble(fa_headers = .) %>%
+                dplyr::mutate(header_elems = purrr::map(fa_headers ,
+                                                        ~( stringr::str_match_all(string = ..1 , pattern = "([^\\s]+)\\s(.*)\\[(.*)\\]") %>%
+                                                                                unlist() ))) %>%
+                tidyr::unnest_wider(col = header_elems) %>%
+                dplyr::select(-...1) %>%
+                dplyr::rename(subject_id = "...2" ,
+                              desc = "...3",
+                              species = "...4") %>%
+                dplyr::mutate_all(stringr::str_trim) %>%
+                dplyr::mutate(align_coord = stringr::str_match(string = subject_id,".*:([:digit:]+-[:digit:]+)") %>% .[,2] ) %>% ## add alignment coord column
+                dplyr::mutate(subject_id = stringr::str_remove(string = subject_id,":.*"))  ## remove alignment coord from subject id
+
+        if(keep_alignemnt_coord){
+                fa_new_headers <-fa_headers_dislocate %>% glue::glue_data("{subject_id}__{align_coord}__{desc}__{species}")
+        } else {
+                fa_new_headers <-fa_headers_dislocate %>% glue::glue_data("{subject_id}__{desc}__{species}")
+        }
+
+        ## Replace any special char with '_'
+        fa_new_headers <- fa_new_headers %>% stringr::str_replace_all(pattern = "\\W+" , "_") ## replace special char _
+
+        names(fa_seq) <- fa_new_headers
+        return(fa_seq)
+
+}
 
 
 
