@@ -552,6 +552,54 @@ format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
 }
 
 
+## subset fasta
+
+#' get records from BStringset
+#'
+#' @description an object of class BStringset stores sequences and headers from FASTA or FASTQ files. See \link{Biostrings::readBStringSet()}. This function helps users to filter sequences by headers with full or partial match.
+#' @param x character vector of query ids
+#' @param y an object of class \code{BStringset} from which sequences to be filtered
+#' @param partial_match logical (default TRUE).
+#' \enumerate {
+#' \item TRUE : return sequences if element of x matches anywhere in the headers of y.
+#' \item FALSE : return sequences only of exact match occur between element of x and headers of y.
+#' }
+#'
+#' @return an object of class BStringset
+#' @export
+#' @importFrom purrr map
+#' @importFrom stringr str_which fixed
+#' @examples
+subset_bstringset <- function(x , y,  partial_match  = TRUE){
+
+        ## validate inputs
+        if(! is(x , "character")){
+                stop("'x' must be an object of class 'character'" )
+        }
+
+        if(! is(y , "BStringSet")){
+             stop("'y' must be an object of class 'BStringset'" )
+        }
+
+        fa_headers <- names(y)
+
+        if(partial_match){
+                match_index <- purrr::map(x , ~ stringr::str_which( fa_headers , stringr::fixed(..1) ) )
+        } else {
+                match_index <- purrr::map(x , ~ match(..1 , fa_headers))
+        }
+        match_index <-  unlist(match_index) %>% unique()
+        match_index <- match_index[! match_index %>% is.na() ]
+
+        if(length(match_index) == 0 ){
+                stop("No match found")
+        } else{
+                match_seq <- y[match_index]
+        }
+
+        return(match_seq)
+}
+
 
 
 
