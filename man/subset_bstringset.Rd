@@ -12,7 +12,7 @@ subset_bstringset(x, y, partial_match = TRUE)
 \item{y}{an object of class \code{BStringset} from which sequences to be filtered}
 
 \item{partial_match}{logical (default TRUE).
-\enumerate {
+\enumerate{
 \item TRUE : return sequences if element of x matches anywhere in the headers of y.
 \item FALSE : return sequences only of exact match occur between element of x and headers of y.
 }}
@@ -21,5 +21,5 @@ subset_bstringset(x, y, partial_match = TRUE)
 an object of class BStringset
 }
 \description{
-an object of class BStringset stores sequences and headers from FASTA or FASTQ files. See \link{Biostrings::readBStringSet()}. This function helps users to filter sequences by headers with full or partial match.
+an object of class BStringset stores sequences and headers from FASTA or FASTQ files. See \code{Biostrings::readBStringSet()}. This function helps users to filter sequences by headers with full or partial match.
 }

@@ -556,11 +556,11 @@ format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
 
 #' get records from BStringset
 #'
-#' @description an object of class BStringset stores sequences and headers from FASTA or FASTQ files. See \link{Biostrings::readBStringSet()}. This function helps users to filter sequences by headers with full or partial match.
+#' @description an object of class BStringset stores sequences and headers from FASTA or FASTQ files. See \code{Biostrings::readBStringSet()}. This function helps users to filter sequences by headers with full or partial match.
 #' @param x character vector of query ids
 #' @param y an object of class \code{BStringset} from which sequences to be filtered
 #' @param partial_match logical (default TRUE).
-#' \enumerate {
+#' \enumerate{
 #' \item TRUE : return sequences if element of x matches anywhere in the headers of y.
 #' \item FALSE : return sequences only of exact match occur between element of x and headers of y.
 #' }
