@@ -9,7 +9,8 @@ add_taxonomy_columns(
   subject_acc_colname = "subject_acc_ver",
   ncbi_acc_key = NULL,
   taxonomy_level = "kingdom",
-  map_superkindom = TRUE
+  map_superkindom = TRUE,
+  batch_size = 20
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ add_taxonomy_columns(
 }}
 
 \item{map_superkindom}{logical (default TRUE). map superkingdom if kingdom not found. Valid only when taxonomy_level == "kingdom".}
+
+\item{batch_size}{The number of queries to submit at a time.}
 }
 \value{
 

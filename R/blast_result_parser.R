@@ -22,8 +22,9 @@ genbank2uid_tbl <- function(x , ...){
         uid_list <- taxize::genbank2uid(x ,  ...)
         uid_tbl <- tibble::tibble(x = x, taxid = unlist(uid_list)) %>%
                 dplyr::bind_cols( purrr::map_df(uid_list , attributes))
-        time_taken <- start_time - lubridate::now()
+        time_taken <-  (lubridate::now() - start_time) %>% round(2)
         cat_green_tick("done. ", " Time taken " , time_taken)
+        cat_rule()
         return(uid_tbl)
 
 }
@@ -90,12 +91,13 @@ get_taxon_rank <-  function(x , rank = "kingdom"){
         if(length(rank) !=1 ) stop("argument `rank` must be of length 1")
 
         start_time <- lubridate::now()
-        cli::cat_bullet("Starting rank search...",col = "red")
+        cli::cat_bullet("Rank search begins...",col = "red")
+        cli::cat_rule()
         result_ranks <- taxizedb::classification(x$query_taxon)  %>%
                 tibble::tibble(taxid = names(.) , all_ranks = .) %>%
                 tidyr::unnest(cols = all_ranks) %>%
                 dplyr::filter(.$rank == !!rank)
-        time_taken <- start_time - lubridate::now()
+        time_taken <- lubridate::now() - start_time
         cat_green_tick("done. ", " Time taken " , time_taken)
         rank_id_col_name <- paste(rank , "id" ,sep = "_")
         x %>% dplyr::left_join(result_ranks, by = c("query_taxon" = "taxid")) %>%
@@ -363,6 +365,7 @@ remove_redundant_hits <-  function(blast_output_tbl ,
 #' Add taxonomy annotations to blast tabular output
 #'
 #' @description Given the blast output (\code{-outfmt 7}) in a tabular format add taxonomic annotations to each subject hit.
+#'
 #' @param blast_output_tbl a tbl of blast output format 7 (\code{-outfmt 7})
 #' @param subject_acc_colname a string (default : "subject_acc_ver")denoting column name of subject_acc_colname.
 #' @param ncbi_acc_key user specific ENTREZ api key. Get one via \code{taxize::use_entrez()}
@@ -388,6 +391,7 @@ remove_redundant_hits <-  function(blast_output_tbl ,
 #' \item no rank
 #' }
 #' @param map_superkindom logical (default TRUE). map superkingdom if kingdom not found. Valid only when taxonomy_level == "kingdom".
+#' @param batch_size The number of queries to submit at a time.
 #'
 #' @return
 #' @export
@@ -402,7 +406,8 @@ add_taxonomy_columns <- function(blast_output_tbl,
                                  subject_acc_colname = "subject_acc_ver",
                                  ncbi_acc_key =NULL,
                                  taxonomy_level = "kingdom",
-                                 map_superkindom = TRUE){
+                                 map_superkindom = TRUE,
+                                 batch_size = 20 ){
 
         ## validate user inputs
         ## blast_output_tbl must be tbl
@@ -442,20 +447,8 @@ add_taxonomy_columns <- function(blast_output_tbl,
                 taxon_data_sub <- blast_output_tbl %>%
                         dplyr::select(subject_acc_ver , taxid)
         } else{
-                ## split subject accession vector in chunks
-                ## splitting long vector of subject id in chunks is necessary as ping many ids at a time to NCBI frequently throws error
-                chunk_max_length = 20 ## each chunk can be maximum of length "chunk_max_length"
-                chunk_length <-   length(subject_acc_id) / chunk_max_length
-                subject_acc_id_splts <- split(subject_acc_id , f = rep(1:chunk_length, length.out = length(subject_acc_id)))
-
-                cli::cli_rule("'taxid' mapping starts")
-                cli::cli_alert(paste("Number of iterations to take place : "  , chunk_length ,sep = " "))
-
                 ## get taxid for each subject hit
-                taxon_data <- purrr::map(subject_acc_id_splts ,
-                                         ~ phyloR::genbank2uid_tbl(..1,key = ncbi_acc_key) )
-
-                cat_green_tick("Mapping done.")
+                taxon_data <- phyloR::genbank2uid_tbl(subject_acc_id,key = ncbi_acc_key, batch_size = batch_size)
 
                 ## list of tbl to tbl
                 taxon_data_sub <- taxon_data %>%
