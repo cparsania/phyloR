@@ -5,8 +5,8 @@
 \title{Add taxonomy annotations to blast tabular output}
 \usage{
 add_taxonomy_columns(
-  blast_output_tbl,
-  subject_acc_colname = "subject_acc_ver",
+  tbl,
+  ncbi_accession_colname = "ncbi_accession",
   ncbi_acc_key = NULL,
   taxonomy_level = "kingdom",
   map_superkindom = TRUE,
@@ -14,9 +14,9 @@ add_taxonomy_columns(
 )
 }
 \arguments{
-\item{blast_output_tbl}{a tbl of blast output format 7 (\code{-outfmt 7})}
+\item{tbl}{an object of class tbl}
 
-\item{subject_acc_colname}{a string (default : "subject_acc_ver")denoting column name of subject_acc_colname.}
+\item{ncbi_accession_colname}{a string (default : "ncbi_accession") denoting column name of ncbi accession.}
 
 \item{ncbi_acc_key}{user specific ENTREZ api key. Get one via \code{taxize::use_entrez()}}
 
@@ -50,5 +50,5 @@ add_taxonomy_columns(
 
 }
 \description{
-Given the blast output (\code{-outfmt 7}) in a tabular format add taxonomic annotations to each subject hit.
+Given a tbl with a column of valid ncbi accession,  the function can add taxonomic annotations for each row.
 }

@@ -364,10 +364,10 @@ remove_redundant_hits <-  function(blast_output_tbl ,
 
 #' Add taxonomy annotations to blast tabular output
 #'
-#' @description Given the blast output (\code{-outfmt 7}) in a tabular format add taxonomic annotations to each subject hit.
+#' @description Given a tbl with a column of valid ncbi accession,  the function can add taxonomic annotations for each row.
 #'
-#' @param blast_output_tbl a tbl of blast output format 7 (\code{-outfmt 7})
-#' @param subject_acc_colname a string (default : "subject_acc_ver")denoting column name of subject_acc_colname.
+#' @param tbl an object of class tbl
+#' @param ncbi_accession_colname a string (default : "ncbi_accession") denoting column name of ncbi accession.
 #' @param ncbi_acc_key user specific ENTREZ api key. Get one via \code{taxize::use_entrez()}
 #' @param taxonomy_level a string indicating level of taxonomy to be mapped. Can be one of the following
 #' \enumerate{
@@ -402,16 +402,16 @@ remove_redundant_hits <-  function(blast_output_tbl ,
 #' @importFrom purrr map
 #' @importFrom TidyWrappers tbl_keep_rows_NA_any
 #' @examples
-add_taxonomy_columns <- function(blast_output_tbl,
-                                 subject_acc_colname = "subject_acc_ver",
+add_taxonomy_columns <- function(tbl,
+                                 ncbi_accession_colname = "ncbi_accession",
                                  ncbi_acc_key =NULL,
                                  taxonomy_level = "kingdom",
                                  map_superkindom = TRUE,
                                  batch_size = 20 ){
 
         ## validate user inputs
-        ## blast_output_tbl must be tbl
-        if(!tibble::is_tibble(blast_output_tbl)){
+        ## tbl must be tbl
+        if(!tibble::is_tibble(tbl)){
                 stop("blast_output_tbl must be a class of tibble")
         }
 
@@ -421,15 +421,22 @@ add_taxonomy_columns <- function(blast_output_tbl,
 
 
         ## blast_output_tbl mus not contain column names 'taxid' and taxonomy_level
-        if(any(colnames(blast_output_tbl) %in% c(taxonomy_level))) {
+        if(any(colnames(tbl) %in% c(taxonomy_level))) {
 
                 stop("Column '", taxonomy_level ,"'" , " must not present in 'blast_output_tbl'.",
                      " Either remove it or rename it")
 
         }
+        ncbi_accession_colname <- rlang::sym(ncbi_accession_colname)
+
+        ## ncbi_accession_colname must present in the tbl.
+        if(!rlang::as_name(ncbi_accession_colname) %in% colnames(tbl)){
+                stop(glue::glue("'tbl' must contains column '{ncbi_accession_colname}'. Use argument 'ncbi_accession_colname' to specify a column containing valid ncbi accession in a 'tbl'"))
+        }
+
 
         is_taxid_present <- FALSE
-        if(any(colnames(blast_output_tbl) %in% "taxid")) {
+        if(any(colnames(tbl) %in% "taxid")) {
                 is_taxid_present <- TRUE
                 cli::cat_rule("WARNING")
                 cli::cli_alert_info("As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.")
@@ -438,23 +445,23 @@ add_taxonomy_columns <- function(blast_output_tbl,
         }
 
         ## get subject accession
-        subject_acc_id <- blast_output_tbl %>%
-                dplyr::pull(subject_acc_ver) %>%
+        ncbi_acc <- tbl %>%
+                dplyr::pull(!!ncbi_accession_colname) %>%
                 unique()
 
 
         if(is_taxid_present){
-                taxon_data_sub <- blast_output_tbl %>%
-                        dplyr::select(subject_acc_ver , taxid)
+                taxon_data_sub <- tbl %>%
+                        dplyr::select(!!ncbi_accession_colname , taxid)
         } else{
                 ## get taxid for each subject hit
-                taxon_data <- phyloR::genbank2uid_tbl(subject_acc_id,key = ncbi_acc_key, batch_size = batch_size)
+                taxon_data <- phyloR::genbank2uid_tbl(ncbi_acc,key = ncbi_acc_key, batch_size = batch_size)
 
                 ## list of tbl to tbl
                 taxon_data_sub <- taxon_data %>%
                         dplyr::bind_rows() %>%
                         dplyr::select(1,2) %>%
-                        dplyr::rename("subject_acc_ver" = "x")
+                        dplyr::rename(!!ncbi_accession_colname := "x")
         }
 
 
@@ -474,21 +481,18 @@ add_taxonomy_columns <- function(blast_output_tbl,
 
         ## add column taxid if it is not present in original data
         if(!is_taxid_present){
-                blast_output_tbl <- blast_output_tbl %>%
-                        dplyr::left_join(taxon_data_sub , by = c("subject_acc_ver"))
+                tbl <- tbl %>%
+                        dplyr::left_join(taxon_data_sub , by = rlang::as_name(ncbi_accession_colname))
         }
 
         ## add user asked taxonomy_level
-        blast_output_tbl <- blast_output_tbl %>%
+        tbl <- tbl %>%
                 dplyr::left_join(taxid_to_taxon , by = c("taxid" = "query_taxon"))
 
-        return(blast_output_tbl)
+        return(tbl)
 }
 
 
-subset_fasta <- function(fasta_file){
-
-}
 
 
 #' format fasta headers
