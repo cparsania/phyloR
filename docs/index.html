@@ -64,8 +64,214 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#phylor" class="anchor"></a>phyloR</h1></div>
 <!-- badges: start -->
-<!-- badges: end -->
+
+<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">magrittr</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)</pre></div>
 <p>The goal of <code>phyloR</code> is to pre-process the NCBI blast output for downstream phylogenetic analysis.</p>
+<div id="assign-column-names-to-blast-tabular-output" class="section level2">
+<h2 class="hasAnchor">
+<a href="#assign-column-names-to-blast-tabular-output" class="anchor"></a>Assign column names to blast tabular output</h2>
+<div class="sourceCode" id="cb2"><pre class="r">
+<span class="no">blast_out_file</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span> ,<span class="st">"blast_output_01.txt"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"phyloR"</span>)
+<span class="no">blast_out_tbl</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_delim</a></span>(<span class="no">blast_out_file</span> , <span class="kw">delim</span> <span class="kw">=</span> <span class="st">"\t"</span> , <span class="kw">comment</span> <span class="kw">=</span> <span class="st">"#"</span> ,<span class="kw">col_names</span> <span class="kw">=</span> <span class="no">F</span>)
+
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">blast_out_tbl</span>) <span class="kw">&lt;-</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/get_blast_outformat_7_colnames.html">get_blast_outformat_7_colnames</a></span>()
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">blast_out_tbl</span>)
+<span class="co">#&gt;  [1] "query_acc_ver"    "subject_acc_ver"  "identity"         "alignment_length"</span>
+<span class="co">#&gt;  [5] "mismatches"       "gap_opens"        "q_start"          "q_end"           </span>
+<span class="co">#&gt;  [9] "s_start"          "s_end"            "evalue"           "bit_score"       </span>
+<span class="co">#&gt; [13] "positives"</span></pre></div>
+</div>
+<div id="filter-blast-hits" class="section level2">
+<h2 class="hasAnchor">
+<a href="#filter-blast-hits" class="anchor"></a>Filter blast hits</h2>
+<div class="sourceCode" id="cb3"><pre class="r">
+<span class="co">## evalue &lt;= 1e-5</span>
+
+<span class="no">blast_out_tbl</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/filter_blast_hits.html">filter_blast_hits</a></span>(<span class="kw">evalue</span> <span class="kw">=</span> <span class="fl">1e-5</span>)
+<span class="co">#&gt; # A tibble: 545 x 13</span>
+<span class="co">#&gt;    query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens</span>
+<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 KAE8371401.1  KAE8371401.1       100                253          0         0</span>
+<span class="co">#&gt;  2 KAE8371401.1  XP_031924425.1      71.3              247         71         0</span>
+<span class="co">#&gt;  3 KAE8371401.1  XP_031940570.1      66.4              247         83         0</span>
+<span class="co">#&gt;  4 KAE8371401.1  KAB8261773.1        66.0              247         84         0</span>
+<span class="co">#&gt;  5 KAE8371401.1  XP_022392557.1      64.4              247         69         1</span>
+<span class="co">#&gt;  6 KAE8371401.1  OQD81666.1          61.7              248         95         0</span>
+<span class="co">#&gt;  7 KAE8371401.1  GES63448.1          39.3              229        135         3</span>
+<span class="co">#&gt;  8 KAE8371401.1  XP_001214927.1      39.3              229        135         3</span>
+<span class="co">#&gt;  9 KAE8371401.1  OQD86157.1          38.6              228        132         3</span>
+<span class="co">#&gt; 10 KAE8371401.1  XP_002375911.1      39.1              230        129         5</span>
+<span class="co">#&gt; # … with 535 more rows, and 7 more variables: q_start &lt;dbl&gt;, q_end &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   s_start &lt;dbl&gt;, s_end &lt;dbl&gt;, evalue &lt;dbl&gt;, bit_score &lt;dbl&gt;, positives &lt;dbl&gt;</span>
+
+<span class="co">##  Filter blast hits : bitscore &gt;= 200</span>
+
+<span class="no">blast_out_tbl</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/filter_blast_hits.html">filter_blast_hits</a></span>(<span class="kw">bit_score</span> <span class="kw">=</span> <span class="fl">200</span>)
+<span class="co">#&gt; # A tibble: 6 x 13</span>
+<span class="co">#&gt;   query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens</span>
+<span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 KAE8371401.1  KAE8371401.1       100                253          0         0</span>
+<span class="co">#&gt; 2 KAE8371401.1  XP_031924425.1      71.3              247         71         0</span>
+<span class="co">#&gt; 3 KAE8371401.1  XP_031940570.1      66.4              247         83         0</span>
+<span class="co">#&gt; 4 KAE8371401.1  KAB8261773.1        66.0              247         84         0</span>
+<span class="co">#&gt; 5 KAE8371401.1  XP_022392557.1      64.4              247         69         1</span>
+<span class="co">#&gt; 6 KAE8371401.1  OQD81666.1          61.7              248         95         0</span>
+<span class="co">#&gt; # … with 7 more variables: q_start &lt;dbl&gt;, q_end &lt;dbl&gt;, s_start &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   s_end &lt;dbl&gt;, evalue &lt;dbl&gt;, bit_score &lt;dbl&gt;, positives &lt;dbl&gt;</span>
+
+<span class="co">##  Filter blast hits : query coverage &gt;= 90</span>
+
+<span class="no">blast_out_tbl</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/filter_blast_hits.html">filter_blast_hits</a></span>(<span class="kw">query_cov</span> <span class="kw">=</span> <span class="fl">90</span>, <span class="kw">query_length</span> <span class="kw">=</span> <span class="fl">253</span>)
+<span class="co">#&gt; # A tibble: 89 x 13</span>
+<span class="co">#&gt;    query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens</span>
+<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 KAE8371401.1  KAE8371401.1       100                253          0         0</span>
+<span class="co">#&gt;  2 KAE8371401.1  XP_031924425.1      71.3              247         71         0</span>
+<span class="co">#&gt;  3 KAE8371401.1  XP_031940570.1      66.4              247         83         0</span>
+<span class="co">#&gt;  4 KAE8371401.1  KAB8261773.1        66.0              247         84         0</span>
+<span class="co">#&gt;  5 KAE8371401.1  XP_022392557.1      64.4              247         69         1</span>
+<span class="co">#&gt;  6 KAE8371401.1  OQD81666.1          61.7              248         95         0</span>
+<span class="co">#&gt;  7 KAE8371401.1  GES63448.1          39.3              229        135         3</span>
+<span class="co">#&gt;  8 KAE8371401.1  XP_001214927.1      39.3              229        135         3</span>
+<span class="co">#&gt;  9 KAE8371401.1  XP_002375911.1      39.1              230        129         5</span>
+<span class="co">#&gt; 10 KAE8371401.1  OQD72420.1          40                230        127         5</span>
+<span class="co">#&gt; # … with 79 more rows, and 7 more variables: q_start &lt;dbl&gt;, q_end &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   s_start &lt;dbl&gt;, s_end &lt;dbl&gt;, evalue &lt;dbl&gt;, bit_score &lt;dbl&gt;, positives &lt;dbl&gt;</span>
+
+<span class="co">##  Filter blast hits : percent identity &gt;= 90</span>
+
+<span class="no">blast_out_tbl</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/filter_blast_hits.html">filter_blast_hits</a></span>(<span class="kw">identity</span> <span class="kw">=</span> <span class="fl">90</span>)
+<span class="co">#&gt; # A tibble: 1 x 13</span>
+<span class="co">#&gt;   query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens</span>
+<span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 KAE8371401.1  KAE8371401.1         100              253          0         0</span>
+<span class="co">#&gt; # … with 7 more variables: q_start &lt;dbl&gt;, q_end &lt;dbl&gt;, s_start &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   s_end &lt;dbl&gt;, evalue &lt;dbl&gt;, bit_score &lt;dbl&gt;, positives &lt;dbl&gt;</span>
+
+<span class="co">##  Filter blast hits : evalue &lt;= 1e-5, bitscore &gt;= 200, query coverage &gt;= 90, percent identity &gt;= 60, </span>
+
+<span class="no">blast_out_tbl</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/filter_blast_hits.html">filter_blast_hits</a></span>(<span class="kw">evalue</span> <span class="kw">=</span> <span class="fl">1e-5</span>, <span class="kw">bit_score</span> <span class="kw">=</span> <span class="fl">200</span>, <span class="kw">query_cov</span> <span class="kw">=</span> <span class="fl">90</span>, <span class="kw">query_length</span> <span class="kw">=</span> <span class="fl">253</span>, <span class="kw">identity</span> <span class="kw">=</span> <span class="fl">60</span>)
+<span class="co">#&gt; # A tibble: 6 x 13</span>
+<span class="co">#&gt;   query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens</span>
+<span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 KAE8371401.1  KAE8371401.1       100                253          0         0</span>
+<span class="co">#&gt; 2 KAE8371401.1  XP_031924425.1      71.3              247         71         0</span>
+<span class="co">#&gt; 3 KAE8371401.1  XP_031940570.1      66.4              247         83         0</span>
+<span class="co">#&gt; 4 KAE8371401.1  KAB8261773.1        66.0              247         84         0</span>
+<span class="co">#&gt; 5 KAE8371401.1  XP_022392557.1      64.4              247         69         1</span>
+<span class="co">#&gt; 6 KAE8371401.1  OQD81666.1          61.7              248         95         0</span>
+<span class="co">#&gt; # … with 7 more variables: q_start &lt;dbl&gt;, q_end &lt;dbl&gt;, s_start &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   s_end &lt;dbl&gt;, evalue &lt;dbl&gt;, bit_score &lt;dbl&gt;, positives &lt;dbl&gt;</span></pre></div>
+</div>
+<div id="format-fasta-headers" class="section level2">
+<h2 class="hasAnchor">
+<a href="#format-fasta-headers" class="anchor"></a>Format fasta headers</h2>
+<div class="sourceCode" id="cb4"><pre class="r">
+<span class="no">fa_file</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span> ,<span class="st">"blast_output_01.fasta"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"phyloR"</span>)
+<span class="no">fa</span> <span class="kw">&lt;-</span> <span class="kw pkg">Biostrings</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-io.html">readBStringSet</a></span>(<span class="no">fa_file</span>)
+
+<span class="co">## existing headers </span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">fa</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>()
+<span class="co">#&gt; [1] "KAE8371401.1:1-253 trypsin-like cysteine/serine peptidase domain-containing protein [Aspergillus bertholletius]" </span>
+<span class="co">#&gt; [2] "XP_031924425.1:1-247 trypsin-like cysteine/serine peptidase domain-containing protein [Aspergillus caelatus]"    </span>
+<span class="co">#&gt; [3] "XP_031940570.1:1-247 trypsin-like cysteine/serine peptidase domain-containing protein [Aspergillus pseudonomius]"</span>
+<span class="co">#&gt; [4] "KAB8261773.1:1-247 trypsin-like cysteine/serine peptidase domain-containing protein [Aspergillus pseudonomius]"  </span>
+<span class="co">#&gt; [5] "XP_022392557.1:1-228 hypothetical protein ABOM_003016 [Aspergillus bombycis]"                                    </span>
+<span class="co">#&gt; [6] "OQD81666.1:1-248 hypothetical protein PENANT_c026G03216 [Penicillium antarcticum]"</span>
+
+<span class="co">## new headers </span>
+<span class="no">fa_file</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/format_fasta_headers.html">format_fasta_headers</a></span>() <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>()
+<span class="co">#&gt;   A BStringSet instance of length 6</span>
+<span class="co">#&gt;     width seq                                               names               </span>
+<span class="co">#&gt; [1]   253 MKSLQVLGNLLGVAFLMTQPVNA...NGRPDVNNDPVVVTSWINTLRAD KAE8371401_1__1_2...</span>
+<span class="co">#&gt; [2]   247 MKSVKALGNLPYCILLIAQSVSA...YCEPHSNGRPDVNNDPLSASDWI XP_031924425_1__1...</span>
+<span class="co">#&gt; [3]   247 MKPMRSVGRLLFFISFIALPVNA...YCEPSSNGRPDVNNDALSANSWI XP_031940570_1__1...</span>
+<span class="co">#&gt; [4]   247 MKPMRSVGRLLFFISFIALPVNA...YCEPSSNGRPDVNNDALSANSWI KAB8261773_1__1_2...</span>
+<span class="co">#&gt; [5]   228 MKPTKALGRLLFFTSIIASPVNA...YCQPSSNGRPDVNNDPLSADDWI XP_022392557_1__1...</span>
+<span class="co">#&gt; [6]   248 MKPTQGFSNLLCLASLIAQPVNA...CDKASNGRPDINSDTLPAKDWID OQD81666_1__1_248...</span></pre></div>
+</div>
+<div id="remove-redundancy-from-blast-tabular-ouput" class="section level2">
+<h2 class="hasAnchor">
+<a href="#remove-redundancy-from-blast-tabular-ouput" class="anchor"></a>Remove redundancy from blast tabular ouput</h2>
+<div class="sourceCode" id="cb5"><pre class="r"><span class="no">blast_out_tbl</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/remove_redundant_hits.html">remove_redundant_hits</a></span>()
+<span class="co">#&gt; # A tibble: 716 x 13</span>
+<span class="co">#&gt; # Groups:   subject_acc_ver [716]</span>
+<span class="co">#&gt;    query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens</span>
+<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 KAE8371401.1  1FN8_A              31.6              209        127         6</span>
+<span class="co">#&gt;  2 KAE8371401.1  1GDU_A              31.9              210        127         6</span>
+<span class="co">#&gt;  3 KAE8371401.1  1PPZ_A              31.9              210        127         6</span>
+<span class="co">#&gt;  4 KAE8371401.1  AAQ04074.1          27.5              218        135         9</span>
+<span class="co">#&gt;  5 KAE8371401.1  AAR91718.1          30.8              117         73         2</span>
+<span class="co">#&gt;  6 KAE8371401.1  AAR91719.1          28.7              157         94         6</span>
+<span class="co">#&gt;  7 KAE8371401.1  AAW31593.1          27.2              228        147         6</span>
+<span class="co">#&gt;  8 KAE8371401.1  ADK37838.1          29.5              227        136         9</span>
+<span class="co">#&gt;  9 KAE8371401.1  ADY16698.1          35.5              242        151         4</span>
+<span class="co">#&gt; 10 KAE8371401.1  AER28315.1          30.5              236        148         5</span>
+<span class="co">#&gt; # … with 706 more rows, and 7 more variables: q_start &lt;dbl&gt;, q_end &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   s_start &lt;dbl&gt;, s_end &lt;dbl&gt;, evalue &lt;dbl&gt;, bit_score &lt;dbl&gt;, positives &lt;dbl&gt;</span></pre></div>
+</div>
+<div id="add-taxonomy-columns-to-blast-tabular-output" class="section level2">
+<h2 class="hasAnchor">
+<a href="#add-taxonomy-columns-to-blast-tabular-output" class="anchor"></a>Add taxonomy columns to blast tabular output</h2>
+<div class="sourceCode" id="cb6"><pre class="r">
+<span class="co">## add kingdom</span>
+
+<span class="no">with_kingdom</span> <span class="kw">&lt;-</span> <span class="no">blast_out_tbl</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span>(<span class="fl">1</span>:<span class="fl">10</span>) <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/add_taxonomy_columns.html">add_taxonomy_columns</a></span>(<span class="kw">ncbi_accession_colname</span> <span class="kw">=</span> <span class="st">"subject_acc_ver"</span>,
+                                                                       <span class="kw">taxonomy_level</span> <span class="kw">=</span> <span class="st">"kingdom"</span>)
+<span class="co">#&gt; ✓ done.  Time taken 5.2</span>
+<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ● Rank search begins...</span>
+<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ done.  Time taken 0.190485954284668</span>
+
+<span class="no">with_kingdom</span>
+<span class="co">#&gt; # A tibble: 10 x 15</span>
+<span class="co">#&gt;    query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens</span>
+<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 KAE8371401.1  KAE8371401.1       100                253          0         0</span>
+<span class="co">#&gt;  2 KAE8371401.1  XP_031924425.1      71.3              247         71         0</span>
+<span class="co">#&gt;  3 KAE8371401.1  XP_031940570.1      66.4              247         83         0</span>
+<span class="co">#&gt;  4 KAE8371401.1  KAB8261773.1        66.0              247         84         0</span>
+<span class="co">#&gt;  5 KAE8371401.1  XP_022392557.1      64.4              247         69         1</span>
+<span class="co">#&gt;  6 KAE8371401.1  OQD81666.1          61.7              248         95         0</span>
+<span class="co">#&gt;  7 KAE8371401.1  GES63448.1          39.3              229        135         3</span>
+<span class="co">#&gt;  8 KAE8371401.1  XP_001214927.1      39.3              229        135         3</span>
+<span class="co">#&gt;  9 KAE8371401.1  OQD86157.1          38.6              228        132         3</span>
+<span class="co">#&gt; 10 KAE8371401.1  XP_002375911.1      39.1              230        129         5</span>
+<span class="co">#&gt; # … with 9 more variables: q_start &lt;dbl&gt;, q_end &lt;dbl&gt;, s_start &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   s_end &lt;dbl&gt;, evalue &lt;dbl&gt;, bit_score &lt;dbl&gt;, positives &lt;dbl&gt;, taxid &lt;chr&gt;,</span>
+<span class="co">#&gt; #   kingdom &lt;chr&gt;</span>
+
+<span class="co">## add species </span>
+
+<span class="no">with_kingdom_and_species</span> <span class="kw">&lt;-</span> <span class="no">with_kingdom</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/add_taxonomy_columns.html">add_taxonomy_columns</a></span>(<span class="kw">ncbi_accession_colname</span> <span class="kw">=</span> <span class="st">"subject_acc_ver"</span> ,
+                                                                  <span class="kw">taxonomy_level</span> <span class="kw">=</span> <span class="st">"species"</span>)
+<span class="co">#&gt; ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ● Rank search begins...</span>
+<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ done.  Time taken 0.0854787826538086</span>
+
+<span class="no">with_kingdom_and_species</span>
+<span class="co">#&gt; # A tibble: 10 x 16</span>
+<span class="co">#&gt;    query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens</span>
+<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 KAE8371401.1  KAE8371401.1       100                253          0         0</span>
+<span class="co">#&gt;  2 KAE8371401.1  XP_031924425.1      71.3              247         71         0</span>
+<span class="co">#&gt;  3 KAE8371401.1  XP_031940570.1      66.4              247         83         0</span>
+<span class="co">#&gt;  4 KAE8371401.1  KAB8261773.1        66.0              247         84         0</span>
+<span class="co">#&gt;  5 KAE8371401.1  XP_022392557.1      64.4              247         69         1</span>
+<span class="co">#&gt;  6 KAE8371401.1  OQD81666.1          61.7              248         95         0</span>
+<span class="co">#&gt;  7 KAE8371401.1  GES63448.1          39.3              229        135         3</span>
+<span class="co">#&gt;  8 KAE8371401.1  XP_001214927.1      39.3              229        135         3</span>
+<span class="co">#&gt;  9 KAE8371401.1  OQD86157.1          38.6              228        132         3</span>
+<span class="co">#&gt; 10 KAE8371401.1  XP_002375911.1      39.1              230        129         5</span>
+<span class="co">#&gt; # … with 10 more variables: q_start &lt;dbl&gt;, q_end &lt;dbl&gt;, s_start &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   s_end &lt;dbl&gt;, evalue &lt;dbl&gt;, bit_score &lt;dbl&gt;, positives &lt;dbl&gt;, taxid &lt;chr&gt;,</span>
+<span class="co">#&gt; #   kingdom &lt;chr&gt;, species &lt;chr&gt;</span></pre></div>
+</div>
 </div>
   </div>
 
@@ -83,7 +289,14 @@
 </ul>
 </div>
 
-  </div>
+  <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/cparsania/tidywrappers"><img src="https://img.shields.io/badge/devel%20version-0.0.1.9000-blue.svg"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg"></a></li>
+</ul>
+</div>
+</div>
 </div>
 
 
