@@ -9,11 +9,6 @@
 [![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-``` r
-library(magrittr)
-library(dplyr)
-```
-
 The goal of `phyloR` is to pre-process the NCBI blast output for
 downstream phylogenetic analysis.
 
@@ -173,11 +168,11 @@ blast_out_tbl %>% phyloR::remove_redundant_hits()
 
 with_kingdom <- blast_out_tbl %>% slice(1:10) %>% phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver", 
                                                                        taxonomy_level = "kingdom")
-#> ✓ done.  Time taken 5.2
+#> ✓ done.  Time taken 5.01
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ done.  Time taken 0.190485954284668
+#> ✓ done.  Time taken 0.178462982177734
 
 with_kingdom
 #> # A tibble: 10 x 15
@@ -205,7 +200,7 @@ with_kingdom_and_species <- with_kingdom %>% phyloR::add_taxonomy_columns(ncbi_a
 #> ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ done.  Time taken 0.0854787826538086
+#> ✓ done.  Time taken 0.112159013748169
 
 with_kingdom_and_species
 #> # A tibble: 10 x 16

@@ -26,7 +26,7 @@ badger::badge_lifecycle()
 <!-- badges: end -->
 
 
-```{r, echo=TRUE, message = FALSE, warning = FALSE}
+```{r, echo=TRUE, message = FALSE, warning = FALSE , include=FALSE}
 library(magrittr)
 library(dplyr)
 
