@@ -20,7 +20,7 @@ add_taxonomy_columns(
 
 \item{ncbi_acc_key}{user specific ENTREZ api key. Get one via \code{taxize::use_entrez()}}
 
-\item{taxonomy_level}{a string indicating level of taxonomy to be mapped. Can be one of the following
+\item{taxonomy_level}{a string indicating level of taxonomy to be mapped. Can be one of the followings
 \enumerate{
 \item superkingdom
 \item kingdom
@@ -47,8 +47,21 @@ add_taxonomy_columns(
 \item{batch_size}{The number of queries to submit at a time.}
 }
 \value{
-
+a tbl.
 }
 \description{
 Given a tbl with a column of valid ncbi accession,  the function can add taxonomic annotations for each row.
+}
+\examples{
+\dontrun{
+ f <- system.file("extdata","blast_output_01.txt" ,package = "phyloR")
+ d <- readr::read_delim(f, delim ="\t" , col_names = F , comment = "#")
+ colnames(d) <- phyloR::get_blast_outformat_7_colnames()
+ ## add kingdom
+ with_kingdom <- d \%>\%  dplyr::slice(1:50) \%>\% add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver" )
+ ## add species
+ with_kingdom_and_species <- with_kingdom \%>\% add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver",
+ taxonomy_level = "species")
+ dplyr::glimpse(with_kingdom_and_species)
+}
 }

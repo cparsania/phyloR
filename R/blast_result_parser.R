@@ -147,8 +147,8 @@ get_taxon_rank <-  function(x , rank = "kingdom"){
 #'
 #' @examples
 #' \dontrun{
-#'  f <- system.file("extdata","example_blast_output_01.txt", package = "phyloR")
-#'  d <- readr::read_delim(f, delim ="\t" , col_names = F)
+#'  f <- system.file("extdata","blast_output_01.txt" ,package = "phyloR")
+#'  d <- readr::read_delim(f, delim ="\t" , col_names = F , comment = "#")
 #'  colnames(d) <- phyloR::get_blast_outformat_7_colnames()
 #'  filtered <- filter_blast_hits(d , query_cov = 90 , identity = 40, query_length = 249, evalue = 1e-6)
 #' }
@@ -339,6 +339,12 @@ get_subj_cov <- function(sstart , send , slen){
 #' @importFrom dplyr arrange
 #' @importFrom dplyr slice
 #' @examples
+#' \dontrun{
+#'  f <- system.file("extdata","blast_output_01.txt" ,package = "phyloR")
+#'  d <- readr::read_delim(f, delim ="\t" , col_names = F , comment = "#")
+#'  colnames(d) <- phyloR::get_blast_outformat_7_colnames()
+#'  remove_redundant_hits(d)
+#' }
 remove_redundant_hits <-  function(blast_output_tbl ,
                                subject_acc_colname = "subject_acc_ver" ,
                                alignment_length_colname = "alignment_length"){
@@ -360,7 +366,7 @@ remove_redundant_hits <-  function(blast_output_tbl ,
 
 
 
-## given the blast hits in tabular format add taxonomy annotations
+## Given the blast hits in tabular format add taxonomy annotations
 
 #' Add taxonomy annotations to blast tabular output
 #'
@@ -369,7 +375,7 @@ remove_redundant_hits <-  function(blast_output_tbl ,
 #' @param tbl an object of class tbl
 #' @param ncbi_accession_colname a string (default : "ncbi_accession") denoting column name of ncbi accession.
 #' @param ncbi_acc_key user specific ENTREZ api key. Get one via \code{taxize::use_entrez()}
-#' @param taxonomy_level a string indicating level of taxonomy to be mapped. Can be one of the following
+#' @param taxonomy_level a string indicating level of taxonomy to be mapped. Can be one of the followings
 #' \enumerate{
 #' \item superkingdom
 #' \item kingdom
@@ -393,7 +399,7 @@ remove_redundant_hits <-  function(blast_output_tbl ,
 #' @param map_superkindom logical (default TRUE). map superkingdom if kingdom not found. Valid only when taxonomy_level == "kingdom".
 #' @param batch_size The number of queries to submit at a time.
 #'
-#' @return
+#' @return a tbl.
 #' @export
 #' @importFrom tibble is_tibble
 #' @importFrom rlang arg_match
@@ -402,6 +408,17 @@ remove_redundant_hits <-  function(blast_output_tbl ,
 #' @importFrom purrr map
 #' @importFrom TidyWrappers tbl_keep_rows_NA_any
 #' @examples
+#' \dontrun{
+#'  f <- system.file("extdata","blast_output_01.txt" ,package = "phyloR")
+#'  d <- readr::read_delim(f, delim ="\t" , col_names = F , comment = "#")
+#'  colnames(d) <- phyloR::get_blast_outformat_7_colnames()
+#'  ## add kingdom
+#'  with_kingdom <- d %>%  dplyr::slice(1:50) %>% add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver" )
+#'  ## add species
+#'  with_kingdom_and_species <- with_kingdom %>% add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver",
+#'  taxonomy_level = "species")
+#'  dplyr::glimpse(with_kingdom_and_species)
+#' }
 add_taxonomy_columns <- function(tbl,
                                  ncbi_accession_colname = "ncbi_accession",
                                  ncbi_acc_key =NULL,
@@ -495,7 +512,7 @@ add_taxonomy_columns <- function(tbl,
 
 
 
-#' format fasta headers
+#' Format fasta headers
 #' @description format the sequence headers for fasta file obtained from NCBI blast output
 #' @param fasta_file string denoting full path of a fasta file.
 #' @param keep_alignemnt_coord logical (default : TRUE) decides whether alignment coordinates to keep in headers or not. When TRUE header must contains alignment coordinates in this format \code{:([:digit:]+-[:digit:]+)}. (e.g. CEJ90625.1:1-252)
@@ -511,6 +528,13 @@ add_taxonomy_columns <- function(tbl,
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#'  f <- system.file("extdata","blast_output_01.fasta" ,package = "phyloR")
+#'  ## existing headers
+#'  Biostrings::readAAStringSet(f) %>% names() %>% head()
+#'  ## new  headers
+#'  f %>% format_fasta_headers() %>% names() %>% head()
+#' }
 format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
 
         ## validate inputs
@@ -551,7 +575,7 @@ format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
 
 ## subset fasta
 
-#' get records from BStringset
+#' Get records from BStringset
 #'
 #' @description an object of class BStringset stores sequences and headers from FASTA or FASTQ files. See \code{Biostrings::readBStringSet()}. This function helps users to filter sequences by headers with full or partial match.
 #' @param x character vector of query ids
@@ -567,6 +591,14 @@ format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
 #' @importFrom purrr map
 #' @importFrom stringr str_which fixed
 #' @examples
+#' \dontrun{
+#' x <-  c("EIT75269.1", "TGO19408.1", "KAF2153260.1", "OAA41719.1", "OSS52177.1", "XP_018252424.1", "XP_008598593.1", "KXN65110.1", "XP_018147989.1", "XP_022493698.1", "RII05464.1", "XP_018703519.1", "RZR67285.1", "OLY78428.1", "XP_007819064.1", "PQK17331.1", "KXN66278.1", "CRK21695.1", "CVK85925.1", "KID81639.1")
+#' y_file <- system.file("extdata" ,"blast_output_01.fasta" , package = "phyloR")
+#' y <- Biostrings::readBStringSet(y_file)
+#' ## subset fasta by partial match
+#' sub <- phyloR::subset_bstringset(x = x , y = y ,partial_match = T)
+#' subset_bstringset(x , y,  partial_match  = TRUE)
+#' }
 subset_bstringset <- function(x , y,  partial_match  = TRUE){
 
         ## validate inputs

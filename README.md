@@ -7,6 +7,5 @@
 
 <!-- badges: end -->
 
-phyloR is an R package. The goal of phyloR is to perform the
-phylogenetic analysis from the result of tabular blast output (–outfmt 7
-)
+The goal of `phyloR` is to pre-process the NCBI blast output for
+downstream phylogenetic analysis.

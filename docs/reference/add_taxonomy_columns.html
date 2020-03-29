@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Wrapper function around taxize::genbank2uid. — genbank2uid_tbl • phyloR</title>
+<title>Add taxonomy annotations to blast tabular output — add_taxonomy_columns • phyloR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Wrapper function around taxize::genbank2uid. — genbank2uid_tbl" />
-<meta property="og:description" content="Given a genBank accession alphanumeric string or a gi numeric string (x), it returns tibble of taxid, name and other related columns." />
+<meta property="og:title" content="Add taxonomy annotations to blast tabular output — add_taxonomy_columns" />
+<meta property="og:description" content="Given a tbl with a column of valid ncbi accession,  the function can add taxonomic annotations for each row." />
 
 
 
@@ -103,38 +103,87 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Wrapper function around taxize::genbank2uid.</h1>
+    <h1>Add taxonomy annotations to blast tabular output</h1>
     
-    <div class="hidden name"><code>genbank2uid_tbl.Rd</code></div>
+    <div class="hidden name"><code>add_taxonomy_columns.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Given a genBank accession alphanumeric string or a gi numeric string <code>(x)</code>, it returns tibble of taxid, name and other related columns.</p>
+    <p>Given a tbl with a column of valid ncbi accession,  the function can add taxonomic annotations for each row.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>genbank2uid_tbl</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>add_taxonomy_columns</span>(
+  <span class='no'>tbl</span>,
+  <span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span> <span class='st'>"ncbi_accession"</span>,
+  <span class='kw'>ncbi_acc_key</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>taxonomy_level</span> <span class='kw'>=</span> <span class='st'>"kingdom"</span>,
+  <span class='kw'>map_superkindom</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>20</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>vector of genBank accession alphanumeric string, or a gi numeric string <code>(x)</code>.</p></td>
+      <th>tbl</th>
+      <td><p>an object of class tbl</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>other parameters to be passed to <code><a href='https://docs.ropensci.org/taxize/reference/genbank2uid.html'>taxize::genbank2uid</a></code></p></td>
+      <th>ncbi_accession_colname</th>
+      <td><p>a string (default : "ncbi_accession") denoting column name of ncbi accession.</p></td>
+    </tr>
+    <tr>
+      <th>ncbi_acc_key</th>
+      <td><p>user specific ENTREZ api key. Get one via <code><a href='https://docs.ropensci.org/taxize/reference/key_helpers.html'>taxize::use_entrez()</a></code></p></td>
+    </tr>
+    <tr>
+      <th>taxonomy_level</th>
+      <td><p>a string indicating level of taxonomy to be mapped. Can be one of the followings</p><ol>
+<li><p>superkingdom</p></li>
+<li><p>kingdom</p></li>
+<li><p>phylum</p></li>
+<li><p>subphylum</p></li>
+<li><p>class</p></li>
+<li><p>subclass</p></li>
+<li><p>infraclass</p></li>
+<li><p>cohort</p></li>
+<li><p>order</p></li>
+<li><p>suborder</p></li>
+<li><p>infraorder</p></li>
+<li><p>superfamily</p></li>
+<li><p>family</p></li>
+<li><p>subfamily</p></li>
+<li><p>genus</p></li>
+<li><p>species</p></li>
+<li><p>tribe</p></li>
+<li><p>no rank</p></li>
+</ol></td>
+    </tr>
+    <tr>
+      <th>map_superkindom</th>
+      <td><p>logical (default TRUE). map superkingdom if kingdom not found. Valid only when taxonomy_level == "kingdom".</p></td>
+    </tr>
+    <tr>
+      <th>batch_size</th>
+      <td><p>The number of queries to submit at a time.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a tbl with colnames x, taxid, class, match, multiple_matches, pattern_match, uri, name</p>
+    <p>a tbl.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"XP_022900619.1"</span>, <span class='st'>"XP_022900618.1"</span>, <span class='st'>"XP_018333511.1"</span>, <span class='st'>"XP_018573075.1"</span>)
-<span class='fu'>genbank2uid_tbl</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>x</span>)
+ <span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,<span class='st'>"blast_output_01.txt"</span> ,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"phyloR"</span>)
+ <span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>readr</span><span class='kw ns'>::</span><span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_delim</a></span>(<span class='no'>f</span>, <span class='kw'>delim</span> <span class='kw'>=</span><span class='st'>"\t"</span> , <span class='kw'>col_names</span> <span class='kw'>=</span> <span class='no'>F</span> , <span class='kw'>comment</span> <span class='kw'>=</span> <span class='st'>"#"</span>)
+ <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>d</span>) <span class='kw'>&lt;-</span> <span class='kw pkg'>phyloR</span><span class='kw ns'>::</span><span class='fu'><a href='get_blast_outformat_7_colnames.html'>get_blast_outformat_7_colnames</a></span>()
+ <span class='co'>## add kingdom</span>
+ <span class='no'>with_kingdom</span> <span class='kw'>&lt;-</span> <span class='no'>d</span> <span class='kw'>%&gt;%</span>  <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/slice.html'>slice</a></span>(<span class='fl'>1</span>:<span class='fl'>50</span>) <span class='kw'>%&gt;%</span> <span class='fu'>add_taxonomy_columns</span>(<span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span><span class='st'>"subject_acc_ver"</span> )
+ <span class='co'>## add species</span>
+ <span class='no'>with_kingdom_and_species</span> <span class='kw'>&lt;-</span> <span class='no'>with_kingdom</span> <span class='kw'>%&gt;%</span> <span class='fu'>add_taxonomy_columns</span>(<span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span><span class='st'>"subject_acc_ver"</span>,
+ <span class='kw'>taxonomy_level</span> <span class='kw'>=</span> <span class='st'>"species"</span>)
+ <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>glimpse</a></span>(<span class='no'>with_kingdom_and_species</span>)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

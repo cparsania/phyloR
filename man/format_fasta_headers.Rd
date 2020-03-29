@@ -2,7 +2,7 @@
 % Please edit documentation in R/blast_result_parser.R
 \name{format_fasta_headers}
 \alias{format_fasta_headers}
-\title{format fasta headers}
+\title{Format fasta headers}
 \usage{
 format_fasta_headers(fasta_file = NULL, keep_alignemnt_coord = TRUE)
 }
@@ -16,4 +16,13 @@ sequences as an object of class \code{Biostrings}
 }
 \description{
 format the sequence headers for fasta file obtained from NCBI blast output
+}
+\examples{
+\dontrun{
+ f <- system.file("extdata","blast_output_01.fasta" ,package = "phyloR")
+ ## existing headers
+ Biostrings::readAAStringSet(f) \%>\% names() \%>\% head()
+ ## new  headers
+ f \%>\% format_fasta_headers() \%>\% names() \%>\% head()
+}
 }
