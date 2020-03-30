@@ -65,15 +65,23 @@
 <a href="#phylor" class="anchor"></a>phyloR</h1></div>
 <!-- badges: start -->
 
-<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">magrittr</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)</pre></div>
-<p>The goal of <code>phyloR</code> is to pre-process the NCBI blast output for downstream phylogenetic analysis.</p>
+<p><code>phyloR</code> is an R package. It helps to pre-process the NCBI blast output for downstream phylogenetic analysis.</p>
+<div id="install" class="section level2">
+<h2 class="hasAnchor">
+<a href="#install" class="anchor"></a>Install</h2>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="kw">if</span>(<span class="fu"><a href="https://rdrr.io/r/base/library.html">require</a></span>(<span class="st">"devtools"</span>)){
+        <span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"cparsania/phyloR"</span>)
+} <span class="kw">else</span>{
+        <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"devtools"</span>)
+        <span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"cparsania/phyloR"</span>)
+}</pre></div>
+</div>
 <div id="assign-column-names-to-blast-tabular-output" class="section level2">
 <h2 class="hasAnchor">
 <a href="#assign-column-names-to-blast-tabular-output" class="anchor"></a>Assign column names to blast tabular output</h2>
 <div class="sourceCode" id="cb2"><pre class="r">
 <span class="no">blast_out_file</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span> ,<span class="st">"blast_output_01.txt"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"phyloR"</span>)
-<span class="no">blast_out_tbl</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_delim</a></span>(<span class="no">blast_out_file</span> , <span class="kw">delim</span> <span class="kw">=</span> <span class="st">"\t"</span> , <span class="kw">comment</span> <span class="kw">=</span> <span class="st">"#"</span> ,<span class="kw">col_names</span> <span class="kw">=</span> <span class="no">F</span>)
+<span class="no">blast_out_tbl</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/readr/man/read_delim.html">read_delim</a></span>(<span class="no">blast_out_file</span> , <span class="kw">delim</span> <span class="kw">=</span> <span class="st">"\t"</span> , <span class="kw">comment</span> <span class="kw">=</span> <span class="st">"#"</span> ,<span class="kw">col_names</span> <span class="kw">=</span> <span class="no">F</span>)
 
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">blast_out_tbl</span>) <span class="kw">&lt;-</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/get_blast_outformat_7_colnames.html">get_blast_outformat_7_colnames</a></span>()
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">blast_out_tbl</span>)
@@ -218,13 +226,17 @@
 <div class="sourceCode" id="cb6"><pre class="r">
 <span class="co">## add kingdom</span>
 
-<span class="no">with_kingdom</span> <span class="kw">&lt;-</span> <span class="no">blast_out_tbl</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span>(<span class="fl">1</span>:<span class="fl">10</span>) <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/add_taxonomy_columns.html">add_taxonomy_columns</a></span>(<span class="kw">ncbi_accession_colname</span> <span class="kw">=</span> <span class="st">"subject_acc_ver"</span>,
-                                                                       <span class="kw">taxonomy_level</span> <span class="kw">=</span> <span class="st">"kingdom"</span>)
-<span class="co">#&gt; ✓ done.  Time taken 5.2</span>
-<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="no">with_kingdom</span> <span class="kw">&lt;-</span> <span class="no">blast_out_tbl</span> <span class="kw">%&gt;%</span> <span class="fu">slice</span>(<span class="fl">1</span>:<span class="fl">10</span>) <span class="kw">%&gt;%</span>
+        <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/add_taxonomy_columns.html">add_taxonomy_columns</a></span>(<span class="kw">ncbi_accession_colname</span> <span class="kw">=</span> <span class="st">"subject_acc_ver"</span>, <span class="kw">taxonomy_level</span> <span class="kw">=</span> <span class="st">"kingdom"</span>)
+<span class="co">#&gt; No ENTREZ API key provided</span>
+<span class="co">#&gt;  Get one via taxize::use_entrez()</span>
+<span class="co">#&gt; See https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/</span>
+<span class="co">#&gt; ✓ Done.  Time taken 9.67</span>
+<span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ● Rank search begins...</span>
-<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; ✓ done.  Time taken 0.190485954284668</span>
+<span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ Done.  Time taken 0.18</span>
+
 
 <span class="no">with_kingdom</span>
 <span class="co">#&gt; # A tibble: 10 x 15</span>
@@ -248,11 +260,13 @@
 
 <span class="no">with_kingdom_and_species</span> <span class="kw">&lt;-</span> <span class="no">with_kingdom</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/add_taxonomy_columns.html">add_taxonomy_columns</a></span>(<span class="kw">ncbi_accession_colname</span> <span class="kw">=</span> <span class="st">"subject_acc_ver"</span> ,
                                                                   <span class="kw">taxonomy_level</span> <span class="kw">=</span> <span class="st">"species"</span>)
-<span class="co">#&gt; ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.</span>
+<span class="co">#&gt; ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.</span>
+<span class="co">#&gt; ── WARNING ENDS ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ● Rank search begins...</span>
-<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; ✓ done.  Time taken 0.0854787826538086</span>
+<span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ Done.  Time taken 0.05</span>
 
 <span class="no">with_kingdom_and_species</span>
 <span class="co">#&gt; # A tibble: 10 x 16</span>
