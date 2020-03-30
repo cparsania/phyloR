@@ -112,7 +112,7 @@ with_kingdom <- blast_out_tbl %>% slice(1:10) %>%
         phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver", taxonomy_level = "kingdom")
 
 
-with_kingdom
+with_kingdom 
 
 ## add species 
 

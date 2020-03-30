@@ -9,8 +9,19 @@
 [![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-The goal of `phyloR` is to pre-process the NCBI blast output for
-downstream phylogenetic analysis.
+`phyloR` is an R package. It helps to pre-process the NCBI blast output
+for downstream phylogenetic analysis.
+
+## Install
+
+``` r
+if(require("devtools")){
+        devtools::install_github("cparsania/phyloR")
+} else{
+        install.packages("devtools")
+        devtools::install_github("cparsania/phyloR")
+}
+```
 
 ## Assign column names to blast tabular output
 
@@ -166,13 +177,17 @@ blast_out_tbl %>% phyloR::remove_redundant_hits()
 
 ## add kingdom
 
-with_kingdom <- blast_out_tbl %>% slice(1:10) %>% phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver", 
-                                                                       taxonomy_level = "kingdom")
-#> ✓ done.  Time taken 5.01
-#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+with_kingdom <- blast_out_tbl %>% slice(1:10) %>% 
+        phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver", taxonomy_level = "kingdom")
+#> No ENTREZ API key provided
+#>  Get one via taxize::use_entrez()
+#> See https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
+#> ✓ Done.  Time taken 9.67
+#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
-#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ done.  Time taken 0.178462982177734
+#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.18
+
 
 with_kingdom
 #> # A tibble: 10 x 15
@@ -196,11 +211,13 @@ with_kingdom
 
 with_kingdom_and_species <- with_kingdom %>% phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver" ,
                                                                   taxonomy_level = "species")
-#> ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.
+#> ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.
+#> ── WARNING ENDS ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
-#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ done.  Time taken 0.112159013748169
+#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.05
 
 with_kingdom_and_species
 #> # A tibble: 10 x 16
