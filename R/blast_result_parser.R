@@ -97,7 +97,7 @@ get_taxon_rank <-  function(x , rank = "kingdom"){
                 tibble::tibble(taxid = names(.) , all_ranks = .) %>%
                 tidyr::unnest(cols = all_ranks) %>%
                 dplyr::filter(.$rank == !!rank)
-        time_taken <- lubridate::now() - start_time %>% round(2)
+        time_taken <- (lubridate::now() - start_time) %>% round(2)
         cat_green_tick("Done. ", " Time taken " , time_taken)
         rank_id_col_name <- paste(rank , "id" ,sep = "_")
         x %>% dplyr::left_join(result_ranks, by = c("query_taxon" = "taxid")) %>%

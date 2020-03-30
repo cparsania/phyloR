@@ -32,8 +32,18 @@ library(dplyr)
 
 ```
 
-The goal of `phyloR` is to pre-process the NCBI blast output for downstream phylogenetic analysis.
+ `phyloR` is an R package. It helps to  pre-process the NCBI blast output for downstream phylogenetic analysis.
 
+## Install
+
+```{r, echo=TRUE, message = FALSE, warning = FALSE,message=FALSE , eval=FALSE}
+if(require("devtools")){
+        devtools::install_github("cparsania/phyloR")
+} else{
+        install.packages("devtools")
+        devtools::install_github("cparsania/phyloR")
+}
+```
 
 ## Assign column names to blast tabular output
 
@@ -88,18 +98,19 @@ fa_file %>% phyloR::format_fasta_headers() %>% head()
 
 ## Remove redundancy from blast tabular ouput
 
-```{r, echo=TRUE, message = FALSE, warning = FALSE,message=FALSE}
+```{r, echo=TRUE, message = FALSE, warning = FALSE}
 blast_out_tbl %>% phyloR::remove_redundant_hits()
 ```
 
 ## Add taxonomy columns to blast tabular output
 
-```{r, echo=TRUE, message = FALSE, warning = FALSE,message=FALSE}
+```{r, echo=TRUE, message = TRUE, warning = FALSE}
 
 ## add kingdom
 
-with_kingdom <- blast_out_tbl %>% slice(1:10) %>% phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver", 
-                                                                       taxonomy_level = "kingdom")
+with_kingdom <- blast_out_tbl %>% slice(1:10) %>% 
+        phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver", taxonomy_level = "kingdom")
+
 
 with_kingdom
 
