@@ -9,8 +9,8 @@
 [![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-`phyloR` is an R package. It helps to pre-process the NCBI blast output
-for downstream phylogenetic analysis.
+`phyloR` is an R package to deal with NCBI-BLAST output. It helps to
+pre-process BLAST tabular output for downstream phylogenetic analysis.
 
 ## Install
 
@@ -39,6 +39,16 @@ colnames(blast_out_tbl)
 ```
 
 ## Filter blast hits
+
+One can filter blast hits by individual or combinations of these
+variables.
+
+  - e-value
+  - bitscore
+  - query coverage
+  - percent identity
+
+<!-- end list -->
 
 ``` r
 
@@ -123,12 +133,46 @@ blast_out_tbl %>% phyloR::filter_blast_hits(evalue = 1e-5, bit_score = 200, quer
 
 ## Format fasta headers
 
+Fasta file downloaded as an output of blast result has fasta headers of
+two types
+
+1)  Headers with alignment co-ordinates - if only aligned sequences
+    downloaded.
+
+<!-- end list -->
+
+  - E.g. `KAE8371401.1:1-253 trypsin-like cysteine/serine peptidase
+    domain-containing protein [Aspergillus bertholletius]`
+
+<!-- end list -->
+
+2)  Headers without alignment co-ordinates - if full sequences
+    downloaded.
+
+<!-- end list -->
+
+  - E.g. `KAE8371401.1 trypsin-like cysteine/serine peptidase
+    domain-containing protein [Aspergillus bertholletius]`
+
+By default, `phyloR::format_fasta_headers()` divides headers in three
+(header type 2) or four (header type 1) groups delimited by 2
+underscores (`__`).
+
+1)  subject id
+2)  alignment coordinates (Optional for header type 1)
+3)  subject description
+4)  subject species
+
+One can drop alignment coordinates from sequence headers by keeping
+argument `keep_alignemnt_coord = FALSE`
+
 ``` r
 
 fa_file <- system.file("extdata" ,"blast_output_01.fasta", package = "phyloR")
 fa <- Biostrings::readBStringSet(fa_file)
 
 ## existing headers 
+
 names(fa) %>% head()
 #> [1] "KAE8371401.1:1-253 trypsin-like cysteine/serine peptidase domain-containing protein [Aspergillus bertholletius]" 
 #> [2] "XP_031924425.1:1-247 trypsin-like cysteine/serine peptidase domain-containing protein [Aspergillus caelatus]"    
@@ -138,18 +182,31 @@ names(fa) %>% head()
 #> [6] "OQD81666.1:1-248 hypothetical protein PENANT_c026G03216 [Penicillium antarcticum]"
 
 ## new headers 
-fa_file %>% phyloR::format_fasta_headers() %>% head()
-#>   A BStringSet instance of length 6
-#>     width seq                                               names               
-#> [1]   253 MKSLQVLGNLLGVAFLMTQPVNA...NGRPDVNNDPVVVTSWINTLRAD KAE8371401_1__1_2...
-#> [2]   247 MKSVKALGNLPYCILLIAQSVSA...YCEPHSNGRPDVNNDPLSASDWI XP_031924425_1__1...
-#> [3]   247 MKPMRSVGRLLFFISFIALPVNA...YCEPSSNGRPDVNNDALSANSWI XP_031940570_1__1...
-#> [4]   247 MKPMRSVGRLLFFISFIALPVNA...YCEPSSNGRPDVNNDALSANSWI KAB8261773_1__1_2...
-#> [5]   228 MKPTKALGRLLFFTSIIASPVNA...YCQPSSNGRPDVNNDPLSADDWI XP_022392557_1__1...
-#> [6]   248 MKPTQGFSNLLCLASLIAQPVNA...CDKASNGRPDINSDTLPAKDWID OQD81666_1__1_248...
+
+fa_file %>% phyloR::format_fasta_headers() %>% names() %>% head()
+#> [1] "KAE8371401_1__1_253__trypsin_like_cysteine_serine_peptidase_domain_containing_protein__Aspergillus_bertholletius" 
+#> [2] "XP_031924425_1__1_247__trypsin_like_cysteine_serine_peptidase_domain_containing_protein__Aspergillus_caelatus"    
+#> [3] "XP_031940570_1__1_247__trypsin_like_cysteine_serine_peptidase_domain_containing_protein__Aspergillus_pseudonomius"
+#> [4] "KAB8261773_1__1_247__trypsin_like_cysteine_serine_peptidase_domain_containing_protein__Aspergillus_pseudonomius"  
+#> [5] "XP_022392557_1__1_228__hypothetical_protein_ABOM_003016__Aspergillus_bombycis"                                    
+#> [6] "OQD81666_1__1_248__hypothetical_protein_PENANT_c026G03216__Penicillium_antarcticum"
+
+## drop alignment co-ordinates
+
+fa_file %>% phyloR::format_fasta_headers(keep_alignemnt_coord = FALSE) %>% names() %>% head()
+#> [1] "KAE8371401_1__trypsin_like_cysteine_serine_peptidase_domain_containing_protein__Aspergillus_bertholletius" 
+#> [2] "XP_031924425_1__trypsin_like_cysteine_serine_peptidase_domain_containing_protein__Aspergillus_caelatus"    
+#> [3] "XP_031940570_1__trypsin_like_cysteine_serine_peptidase_domain_containing_protein__Aspergillus_pseudonomius"
+#> [4] "KAB8261773_1__trypsin_like_cysteine_serine_peptidase_domain_containing_protein__Aspergillus_pseudonomius"  
+#> [5] "XP_022392557_1__hypothetical_protein_ABOM_003016__Aspergillus_bombycis"                                    
+#> [6] "OQD81666_1__hypothetical_protein_PENANT_c026G03216__Penicillium_antarcticum"
 ```
 
-## Remove redundancy from blast tabular ouput
+## Remove redundant hits from blast tabular ouput
+
+BLAST reports same subject hit multiple time with different alignment
+co-ordinates. For a same subjet id, `phyloR::remove_redundant_hits()`
+select longest subject hit out of given multiples.
 
 ``` r
 blast_out_tbl %>% phyloR::remove_redundant_hits()
@@ -171,7 +228,31 @@ blast_out_tbl %>% phyloR::remove_redundant_hits()
 #> #   s_start <dbl>, s_end <dbl>, evalue <dbl>, bit_score <dbl>, positives <dbl>
 ```
 
+## Subset fasta sequences
+
+After filtering hits from tabular blast output, next obvious question is
+to filter same sequences from a fasta file and write them to new file.
+`phyloR::subset_bstringset()` subset the sequences from a fasta using a
+vector of fasta headers.
+
+``` r
+
+fa_file <- system.file("extdata" ,"blast_output_01.fasta", package = "phyloR")
+fa <- Biostrings::readBStringSet(fa_file)
+query_headers <- fa %>% names() %>% sample(100)
+seq_filtered <- phyloR::subset_bstringset(x = query_headers , y = fa, partial_match = F)
+
+# One can use function `Biostrings::writeXStringSet()` to write filterd sequences to new fasta file. 
+```
+
 ## Add taxonomy columns to blast tabular output
+
+Adding taxonomy details to blast output is very crucial for downstream
+phylogenetic analysis. For example, a phylogenetic tree generated from
+sequence of blast output often required to color tree branches either by
+kingdom, family or any other taxonomical level.
+`phyloR::add_taxonomy_columns()` adds user required taxonomy columns to
+blast tabular output.
 
 ``` r
 
@@ -182,58 +263,79 @@ with_kingdom <- blast_out_tbl %>% slice(1:10) %>%
 #> No ENTREZ API key provided
 #>  Get one via taxize::use_entrez()
 #> See https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
-#> ✓ Done.  Time taken 9.67
-#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 5.21
+#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
-#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ Done.  Time taken 0.18
+#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.08
 
 
-with_kingdom
-#> # A tibble: 10 x 15
-#>    query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens
-#>    <chr>         <chr>              <dbl>            <dbl>      <dbl>     <dbl>
-#>  1 KAE8371401.1  KAE8371401.1       100                253          0         0
-#>  2 KAE8371401.1  XP_031924425.1      71.3              247         71         0
-#>  3 KAE8371401.1  XP_031940570.1      66.4              247         83         0
-#>  4 KAE8371401.1  KAB8261773.1        66.0              247         84         0
-#>  5 KAE8371401.1  XP_022392557.1      64.4              247         69         1
-#>  6 KAE8371401.1  OQD81666.1          61.7              248         95         0
-#>  7 KAE8371401.1  GES63448.1          39.3              229        135         3
-#>  8 KAE8371401.1  XP_001214927.1      39.3              229        135         3
-#>  9 KAE8371401.1  OQD86157.1          38.6              228        132         3
-#> 10 KAE8371401.1  XP_002375911.1      39.1              230        129         5
-#> # … with 9 more variables: q_start <dbl>, q_end <dbl>, s_start <dbl>,
-#> #   s_end <dbl>, evalue <dbl>, bit_score <dbl>, positives <dbl>, taxid <chr>,
-#> #   kingdom <chr>
+with_kingdom %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom)
+#> # A tibble: 10 x 3
+#>    query_acc_ver subject_acc_ver kingdom
+#>    <chr>         <chr>           <chr>  
+#>  1 KAE8371401.1  KAE8371401.1    Fungi  
+#>  2 KAE8371401.1  XP_031924425.1  Fungi  
+#>  3 KAE8371401.1  XP_031940570.1  Fungi  
+#>  4 KAE8371401.1  KAB8261773.1    Fungi  
+#>  5 KAE8371401.1  XP_022392557.1  Fungi  
+#>  6 KAE8371401.1  OQD81666.1      Fungi  
+#>  7 KAE8371401.1  GES63448.1      Fungi  
+#>  8 KAE8371401.1  XP_001214927.1  Fungi  
+#>  9 KAE8371401.1  OQD86157.1      Fungi  
+#> 10 KAE8371401.1  XP_002375911.1  Fungi
+
+## add family  
+
+with_kingdom_and_family <- with_kingdom %>% phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver" ,
+                                                                  taxonomy_level = "family")
+#> ── WARNING ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.
+#> ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.
+#> ── WARNING ENDS ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ● Rank search begins...
+#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.05
+
+with_kingdom_and_family %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom, family )
+#> # A tibble: 10 x 4
+#>    query_acc_ver subject_acc_ver kingdom family        
+#>    <chr>         <chr>           <chr>   <chr>         
+#>  1 KAE8371401.1  KAE8371401.1    Fungi   Aspergillaceae
+#>  2 KAE8371401.1  XP_031924425.1  Fungi   Aspergillaceae
+#>  3 KAE8371401.1  XP_031940570.1  Fungi   Aspergillaceae
+#>  4 KAE8371401.1  KAB8261773.1    Fungi   Aspergillaceae
+#>  5 KAE8371401.1  XP_022392557.1  Fungi   Aspergillaceae
+#>  6 KAE8371401.1  OQD81666.1      Fungi   Aspergillaceae
+#>  7 KAE8371401.1  GES63448.1      Fungi   Aspergillaceae
+#>  8 KAE8371401.1  XP_001214927.1  Fungi   Aspergillaceae
+#>  9 KAE8371401.1  OQD86157.1      Fungi   Aspergillaceae
+#> 10 KAE8371401.1  XP_002375911.1  Fungi   Aspergillaceae
 
 ## add species 
 
-with_kingdom_and_species <- with_kingdom %>% phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver" ,
+with_kingdom_family_and_species <- with_kingdom_and_family %>% phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver" ,
                                                                   taxonomy_level = "species")
-#> ── WARNING ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.
 #> ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.
-#> ── WARNING ENDS ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ENDS ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
-#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ Done.  Time taken 0.05
+#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.04
 
-with_kingdom_and_species
-#> # A tibble: 10 x 16
-#>    query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens
-#>    <chr>         <chr>              <dbl>            <dbl>      <dbl>     <dbl>
-#>  1 KAE8371401.1  KAE8371401.1       100                253          0         0
-#>  2 KAE8371401.1  XP_031924425.1      71.3              247         71         0
-#>  3 KAE8371401.1  XP_031940570.1      66.4              247         83         0
-#>  4 KAE8371401.1  KAB8261773.1        66.0              247         84         0
-#>  5 KAE8371401.1  XP_022392557.1      64.4              247         69         1
-#>  6 KAE8371401.1  OQD81666.1          61.7              248         95         0
-#>  7 KAE8371401.1  GES63448.1          39.3              229        135         3
-#>  8 KAE8371401.1  XP_001214927.1      39.3              229        135         3
-#>  9 KAE8371401.1  OQD86157.1          38.6              228        132         3
-#> 10 KAE8371401.1  XP_002375911.1      39.1              230        129         5
-#> # … with 10 more variables: q_start <dbl>, q_end <dbl>, s_start <dbl>,
-#> #   s_end <dbl>, evalue <dbl>, bit_score <dbl>, positives <dbl>, taxid <chr>,
-#> #   kingdom <chr>, species <chr>
+with_kingdom_family_and_species %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom, family ,species)
+#> # A tibble: 10 x 5
+#>    query_acc_ver subject_acc_ver kingdom family         species                 
+#>    <chr>         <chr>           <chr>   <chr>          <chr>                   
+#>  1 KAE8371401.1  KAE8371401.1    Fungi   Aspergillaceae Aspergillus bertholleti…
+#>  2 KAE8371401.1  XP_031924425.1  Fungi   Aspergillaceae Aspergillus caelatus    
+#>  3 KAE8371401.1  XP_031940570.1  Fungi   Aspergillaceae Aspergillus pseudonomius
+#>  4 KAE8371401.1  KAB8261773.1    Fungi   Aspergillaceae Aspergillus pseudonomius
+#>  5 KAE8371401.1  XP_022392557.1  Fungi   Aspergillaceae Aspergillus bombycis    
+#>  6 KAE8371401.1  OQD81666.1      Fungi   Aspergillaceae Penicillium antarcticum 
+#>  7 KAE8371401.1  GES63448.1      Fungi   Aspergillaceae Aspergillus terreus     
+#>  8 KAE8371401.1  XP_001214927.1  Fungi   Aspergillaceae Aspergillus terreus     
+#>  9 KAE8371401.1  OQD86157.1      Fungi   Aspergillaceae Penicillium antarcticum 
+#> 10 KAE8371401.1  XP_002375911.1  Fungi   Aspergillaceae Aspergillus flavus
 ```
