@@ -3,7 +3,6 @@
 #'
 #' @param ... Other arguments to be passed to \code{cli::cat_bullet}
 #' @keywords internal
-#' @return
 #' @importFrom cli cat_bullet
 cat_green_tick <- function (...){
 
@@ -15,7 +14,6 @@ cat_green_tick <- function (...){
 #'
 #' @param x a value to be checked for numeric or NULL
 #' @keywords internal
-#' @return
 #'
 null_or_numeric <- function(x){
 
@@ -31,7 +29,6 @@ null_or_numeric <- function(x){
 #'
 #' @param x a value to be checked for character or NULL
 #' @keywords internal
-#' @return
 #'
 null_or_character <- function(x){
 
@@ -47,7 +44,6 @@ null_or_character <- function(x){
 #'
 #' @param x a value to be checked for logical or NULL
 #' @keywords internal
-#' @return
 #'
 null_or_logical <- function(x){
 

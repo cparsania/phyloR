@@ -58,10 +58,12 @@ Given a tbl with a column of valid ncbi accession,  the function can add taxonom
  d <- readr::read_delim(f, delim ="\t" , col_names = F , comment = "#")
  colnames(d) <- phyloR::get_blast_outformat_7_colnames()
  ## add kingdom
- with_kingdom <- d \%>\%  dplyr::slice(1:50) \%>\% add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver" )
+ with_kingdom <- d \%>\%
+ dplyr::slice(1:50) \%>\%
+ add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver" )
  ## add species
- with_kingdom_and_species <- with_kingdom \%>\% add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver",
- taxonomy_level = "species")
+ with_kingdom_and_species <- with_kingdom \%>\%
+ add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver",taxonomy_level = "species")
  dplyr::glimpse(with_kingdom_and_species)
 }
 }

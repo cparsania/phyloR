@@ -11,6 +11,7 @@
 #' @importFrom tibble tibble
 #' @importFrom dplyr bind_cols
 #' @importFrom purrr map_df
+#' @importFrom methods is
 #' @examples
 #' \dontrun{
 #' x <- c("XP_022900619.1", "XP_022900618.1", "XP_018333511.1", "XP_018573075.1")
@@ -85,6 +86,9 @@ genbank2uid_tbl <- function(x , ...){
 #'
 get_taxon_rank <-  function(x , rank = "kingdom"){
         #x <- tt
+
+        all_ranks <- id <- name <- query_taxon <- NULL
+
         x <- tibble::tibble(query_taxon = unique(x) %>% as.character())
         rlang::arg_match(rank  , c("no rank", "superkingdom", "kingdom", "phylum", "subphylum", "class", "subclass", "infraclass", "cohort", "order", "suborder", "infraorder", "superfamily", "family", "subfamily", "genus", "species", "tribe"))
 
@@ -150,7 +154,11 @@ get_taxon_rank <-  function(x , rank = "kingdom"){
 #'  f <- system.file("extdata","blast_output_01.txt" ,package = "phyloR")
 #'  d <- readr::read_delim(f, delim ="\t" , col_names = F , comment = "#")
 #'  colnames(d) <- phyloR::get_blast_outformat_7_colnames()
-#'  filtered <- filter_blast_hits(d , query_cov = 90 , identity = 40, query_length = 249, evalue = 1e-6)
+#'  filtered <- filter_blast_hits(d ,
+#'  query_cov = 90 ,
+#'  identity = 40,
+#'  query_length = 249,
+#'  evalue = 1e-6)
 #' }
 #' @seealso \link{get_blast_outformat_7_colnames}
 #'
@@ -160,6 +168,9 @@ filter_blast_hits <- function(blast_tbl ,
                               query_cov = NULL,
                               identity = NULL,
                               query_length = NULL ){
+
+        # global variable declaration
+        q_start <- q_end <- NULL
 
         #validate args
         stopifnot(tibble::is_tibble(blast_tbl))
@@ -413,10 +424,12 @@ remove_redundant_hits <-  function(blast_output_tbl ,
 #'  d <- readr::read_delim(f, delim ="\t" , col_names = F , comment = "#")
 #'  colnames(d) <- phyloR::get_blast_outformat_7_colnames()
 #'  ## add kingdom
-#'  with_kingdom <- d %>%  dplyr::slice(1:50) %>% add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver" )
+#'  with_kingdom <- d %>%
+#'  dplyr::slice(1:50) %>%
+#'  add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver" )
 #'  ## add species
-#'  with_kingdom_and_species <- with_kingdom %>% add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver",
-#'  taxonomy_level = "species")
+#'  with_kingdom_and_species <- with_kingdom %>%
+#'  add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver",taxonomy_level = "species")
 #'  dplyr::glimpse(with_kingdom_and_species)
 #' }
 add_taxonomy_columns <- function(tbl,
@@ -425,6 +438,10 @@ add_taxonomy_columns <- function(tbl,
                                  taxonomy_level = "kingdom",
                                  map_superkindom = TRUE,
                                  batch_size = 20 ){
+
+        ## globle variable declaration
+
+        taxid <- query_taxon <- kingdom <- superkingdom <- NULL
 
         ## validate user inputs
         ## tbl must be tbl
@@ -524,6 +541,7 @@ add_taxonomy_columns <- function(tbl,
 #' @importFrom dplyr select rename mutate_all mutate
 #' @importFrom stringr str_match str_trim str_remove str_replace_all
 #' @importFrom glue glue_data
+#' @importFrom rlang .data
 #' @return sequences as an object of class \code{Biostrings}
 #' @export
 #'
@@ -537,6 +555,10 @@ add_taxonomy_columns <- function(tbl,
 #' }
 format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
 
+        # global variable
+
+        header_elems <- subject_id <- NULL
+
         ## validate inputs
         if(!file.exists(fasta_file)){
             stop("fasta_file does not exist.")
@@ -545,12 +567,13 @@ format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
         fa_seq <- Biostrings::readBStringSet(fasta_file)
         fa_headers <- names(fa_seq)
 
-        fa_headers_dislocate <- fa_headers %>% tibble::tibble(fa_headers = .) %>%
+        fa_headers_dislocate <- fa_headers %>%
+                tibble::tibble(fa_headers = .) %>%
                 dplyr::mutate(header_elems = purrr::map(fa_headers ,
                                                         ~( stringr::str_match_all(string = ..1 , pattern = "([^\\s]+)\\s(.*)\\[(.*)\\]") %>%
                                                                                 unlist() ))) %>%
                 tidyr::unnest_wider(col = header_elems) %>%
-                dplyr::select(-...1) %>%
+                dplyr::select(-.data$...1) %>%
                 dplyr::rename(subject_id = "...2" ,
                               desc = "...3",
                               species = "...4") %>%
@@ -592,7 +615,26 @@ format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
 #' @importFrom stringr str_which fixed
 #' @examples
 #' \dontrun{
-#' x <-  c("EIT75269.1", "TGO19408.1", "KAF2153260.1", "OAA41719.1", "OSS52177.1", "XP_018252424.1", "XP_008598593.1", "KXN65110.1", "XP_018147989.1", "XP_022493698.1", "RII05464.1", "XP_018703519.1", "RZR67285.1", "OLY78428.1", "XP_007819064.1", "PQK17331.1", "KXN66278.1", "CRK21695.1", "CVK85925.1", "KID81639.1")
+#' x <- c("EIT75269.1",
+#'   "TGO19408.1",
+#'   "KAF2153260.1",
+#'   "OAA41719.1",
+#'   "OSS52177.1",
+#'   "XP_018252424.1",
+#'   "XP_008598593.1",
+#'   "KXN65110.1",
+#'   "XP_018147989.1",
+#'   "XP_022493698.1",
+#'   "RII05464.1",
+#'   "XP_018703519.1",
+#'   "RZR67285.1",
+#'   "OLY78428.1",
+#'   "XP_007819064.1",
+#'   "PQK17331.1",
+#'   "KXN66278.1",
+#'   "CRK21695.1",
+#'   "CVK85925.1",
+#'   "KID81639.1")
 #' y_file <- system.file("extdata" ,"blast_output_01.fasta" , package = "phyloR")
 #' y <- Biostrings::readBStringSet(y_file)
 #' ## subset fasta by partial match
@@ -602,11 +644,11 @@ format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
 subset_bstringset <- function(x , y,  partial_match  = TRUE){
 
         ## validate inputs
-        if(! is(x , "character")){
+        if(! methods::is(x , "character")){
                 stop("'x' must be an object of class 'character'" )
         }
 
-        if(! is(y , "BStringSet")){
+        if(! methods::is(y , "BStringSet")){
              stop("'y' must be an object of class 'BStringset'" )
         }
 

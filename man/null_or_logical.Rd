@@ -9,9 +9,6 @@ null_or_logical(x)
 \arguments{
 \item{x}{a value to be checked for logical or NULL}
 }
-\value{
-
-}
 \description{
 Check value NULL or LOGICAL
 }

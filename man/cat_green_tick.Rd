@@ -9,9 +9,6 @@ cat_green_tick(...)
 \arguments{
 \item{...}{Other arguments to be passed to \code{cli::cat_bullet}}
 }
-\value{
-
-}
 \description{
 Print green tick on terminal. Wrapper function on  cli::cat_bullet
 }

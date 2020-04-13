@@ -9,9 +9,6 @@ null_or_numeric(x)
 \arguments{
 \item{x}{a value to be checked for numeric or NULL}
 }
-\value{
-
-}
 \description{
 Check value NULL or Numeric
 }

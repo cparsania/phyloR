@@ -9,9 +9,6 @@ null_or_character(x)
 \arguments{
 \item{x}{a value to be checked for character or NULL}
 }
-\value{
-
-}
 \description{
 Check value NULL or character
 }

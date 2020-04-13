@@ -25,7 +25,26 @@ an object of class BStringset stores sequences and headers from FASTA or FASTQ f
 }
 \examples{
 \dontrun{
-x <-  c("EIT75269.1", "TGO19408.1", "KAF2153260.1", "OAA41719.1", "OSS52177.1", "XP_018252424.1", "XP_008598593.1", "KXN65110.1", "XP_018147989.1", "XP_022493698.1", "RII05464.1", "XP_018703519.1", "RZR67285.1", "OLY78428.1", "XP_007819064.1", "PQK17331.1", "KXN66278.1", "CRK21695.1", "CVK85925.1", "KID81639.1")
+x <- c("EIT75269.1",
+  "TGO19408.1",
+  "KAF2153260.1",
+  "OAA41719.1",
+  "OSS52177.1",
+  "XP_018252424.1",
+  "XP_008598593.1",
+  "KXN65110.1",
+  "XP_018147989.1",
+  "XP_022493698.1",
+  "RII05464.1",
+  "XP_018703519.1",
+  "RZR67285.1",
+  "OLY78428.1",
+  "XP_007819064.1",
+  "PQK17331.1",
+  "KXN66278.1",
+  "CRK21695.1",
+  "CVK85925.1",
+  "KID81639.1")
 y_file <- system.file("extdata" ,"blast_output_01.fasta" , package = "phyloR")
 y <- Biostrings::readBStringSet(y_file)
 ## subset fasta by partial match
