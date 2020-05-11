@@ -339,8 +339,10 @@ get_subj_cov <- function(sstart , send , slen){
 #' @description Given the output of blast tabular format in a tbl, it removes redundancy subject hit accession. For each redundant hit longest hit will be returned.
 #'
 #' @param blast_output_tbl an object of class tbl containing blast tabular output
+#' @param subject_start_colname a string denoting a column of subject start. Default "s_start"
+#' @param subject_end_colname a string denoting a column of subject end Default "s_end"
+#' @param keep_length logical, default FALSE, indicates whether to keep column of subject length.
 #' @param subject_acc_colname a string denoting a column of subject hits in a \code{blast_output_tbl}. Default "subject_acc_ver"
-#' @param alignment_length_colname a string denoting a column of alignment length in a \code{blast_output_tbl}. Default "alignment_length"
 #'
 #' @return a tbl
 #' @export
@@ -356,21 +358,37 @@ get_subj_cov <- function(sstart , send , slen){
 #'  colnames(d) <- phyloR::get_blast_outformat_7_colnames()
 #'  remove_redundant_hits(d)
 #' }
-remove_redundant_hits <-  function(blast_output_tbl ,
+remove_redundant_hits <-  function(blast_output_tbl,
                                subject_acc_colname = "subject_acc_ver" ,
-                               alignment_length_colname = "alignment_length"){
+                               subject_start_colname = "s_start",
+                               subject_end_colname = "s_end" ,
+                               keep_length = FALSE){
 
         if(!tibble::is_tibble(blast_output_tbl)){
                 stop("blast_output_tbl must be a class of tibble")
         }
 
         subject_acc_colname = rlang::sym(subject_acc_colname)
-        alignment_length_colname = rlang::sym(alignment_length_colname)
+        subject_start_colname = rlang::sym(subject_start_colname)
+        subject_end_colname = rlang::sym(subject_end_colname)
+        #alignment_length_colname = rlang::sym(alignment_length_colname)
 
-        blast_output_tbl %>%
+
+        blast_output_tbl22 <- blast_output_tbl %>%
                 dplyr::group_by(!!subject_acc_colname) %>%
-                dplyr::arrange(!!alignment_length_colname) %>%
-                dplyr::slice(1)
+                #dplyr::arrange(!!alignment_length_colname) %>%
+                dplyr::mutate(subject_aligned_length = !!subject_end_colname - !!subject_start_colname + 1) %>%
+                dplyr::arrange(desc(subject_aligned_length)) %>%
+                dplyr::slice(1) %>%
+                dplyr::ungroup()
+
+        if(keep_length){
+                blast_output_tbl22
+        } else {
+                blast_output_tbl22 %>% dplyr::select(-subject_aligned_length)
+        }
+
+
 
 }
 
