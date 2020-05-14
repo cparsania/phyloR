@@ -9,7 +9,7 @@ add_taxonomy_columns(
   ncbi_accession_colname = "ncbi_accession",
   ncbi_acc_key = NULL,
   taxonomy_level = "kingdom",
-  map_superkindom = TRUE,
+  map_superkindom = FALSE,
   batch_size = 20
 )
 }
@@ -20,7 +20,7 @@ add_taxonomy_columns(
 
 \item{ncbi_acc_key}{user specific ENTREZ api key. Get one via \code{taxize::use_entrez()}}
 
-\item{taxonomy_level}{a string indicating level of taxonomy to be mapped. Can be one of the followings
+\item{taxonomy_level}{a string indicating level of taxonomy to be assigned to each ncbi accession. Can be one of the followings
 \enumerate{
 \item superkingdom
 \item kingdom
@@ -42,7 +42,7 @@ add_taxonomy_columns(
 \item no rank
 }}
 
-\item{map_superkindom}{logical (default TRUE). map superkingdom if kingdom not found. Valid only when taxonomy_level == "kingdom".}
+\item{map_superkindom}{logical (default FALSE). Assign superkingdom if kingdom is not found. Valid only when taxonomy_level == "kingdom".}
 
 \item{batch_size}{The number of queries to submit at a time.}
 }
@@ -51,6 +51,16 @@ a tbl.
 }
 \description{
 Given a tbl with a column of valid ncbi accession,  the function can add taxonomic annotations for each row.
+}
+\details{
+The aim of this function is to assign the specific level of ncbi taxonomy to the ncbi accession (protein).
+To do so, it requires a tibble with at least one column of ncbi (protein) accession.
+Returned taxonomy columns will be added on input tibble object keeping original columns as they were.
+Internally, first, it finds the ncbi taxonomy id for each ncbi accession and then it maps required taxonomy level.
+Assigning taxonomy id to each ncbi accession may take time depending upon number of input ncbi accessions.
+On subsequent runs or in a first run you may supply taxonomy column ('taxid') in input tibble,
+which will reduce the time to find taxonomy ids and directly
+assign the taxonomy level to given taxonomy id.
 }
 \examples{
 \dontrun{

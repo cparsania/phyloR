@@ -371,12 +371,9 @@ remove_redundant_hits <-  function(blast_output_tbl,
         subject_acc_colname = rlang::sym(subject_acc_colname)
         subject_start_colname = rlang::sym(subject_start_colname)
         subject_end_colname = rlang::sym(subject_end_colname)
-        #alignment_length_colname = rlang::sym(alignment_length_colname)
-
 
         blast_output_tbl22 <- blast_output_tbl %>%
                 dplyr::group_by(!!subject_acc_colname) %>%
-                #dplyr::arrange(!!alignment_length_colname) %>%
                 dplyr::mutate(subject_aligned_length = !!subject_end_colname - !!subject_start_colname + 1) %>%
                 dplyr::arrange(desc(subject_aligned_length)) %>%
                 dplyr::slice(1) %>%
@@ -404,7 +401,7 @@ remove_redundant_hits <-  function(blast_output_tbl,
 #' @param tbl an object of class tbl
 #' @param ncbi_accession_colname a string (default : "ncbi_accession") denoting column name of ncbi accession.
 #' @param ncbi_acc_key user specific ENTREZ api key. Get one via \code{taxize::use_entrez()}
-#' @param taxonomy_level a string indicating level of taxonomy to be mapped. Can be one of the followings
+#' @param taxonomy_level a string indicating level of taxonomy to be assigned to each ncbi accession. Can be one of the followings
 #' \enumerate{
 #' \item superkingdom
 #' \item kingdom
@@ -425,9 +422,16 @@ remove_redundant_hits <-  function(blast_output_tbl,
 #' \item tribe
 #' \item no rank
 #' }
-#' @param map_superkindom logical (default TRUE). map superkingdom if kingdom not found. Valid only when taxonomy_level == "kingdom".
+#' @param map_superkindom logical (default FALSE). Assign superkingdom if kingdom is not found. Valid only when taxonomy_level == "kingdom".
 #' @param batch_size The number of queries to submit at a time.
-#'
+#' @details The aim of this function is to assign the specific level of ncbi taxonomy to the ncbi accession (protein).
+#' To do so, it requires a tibble with at least one column of ncbi (protein) accession.
+#' Returned taxonomy columns will be added on input tibble object keeping original columns as they were.
+#' Internally, first, it finds the ncbi taxonomy id for each ncbi accession and then it maps required taxonomy level.
+#' Assigning taxonomy id to each ncbi accession may take time depending upon number of input ncbi accessions.
+#' On subsequent runs or in a first run you may supply taxonomy column ('taxid') in input tibble,
+#' which will reduce the time to find taxonomy ids and directly
+#' assign the taxonomy level to given taxonomy id.
 #' @return a tbl.
 #' @export
 #' @importFrom tibble is_tibble
@@ -454,7 +458,7 @@ add_taxonomy_columns <- function(tbl,
                                  ncbi_accession_colname = "ncbi_accession",
                                  ncbi_acc_key =NULL,
                                  taxonomy_level = "kingdom",
-                                 map_superkindom = TRUE,
+                                 map_superkindom = FALSE,
                                  batch_size = 20 ){
 
         ## globle variable declaration
@@ -501,7 +505,6 @@ add_taxonomy_columns <- function(tbl,
                 dplyr::pull(!!ncbi_accession_colname) %>%
                 unique()
 
-
         if(is_taxid_present){
                 taxon_data_sub <- tbl %>%
                         dplyr::select(!!ncbi_accession_colname , taxid)
@@ -515,7 +518,6 @@ add_taxonomy_columns <- function(tbl,
                         dplyr::select(1,2) %>%
                         dplyr::rename(!!ncbi_accession_colname := "x")
         }
-
 
         ## get kingdom
         taxid_to_taxon <- phyloR::get_taxon_rank(taxon_data_sub$taxid , rank = taxonomy_level) %>%
