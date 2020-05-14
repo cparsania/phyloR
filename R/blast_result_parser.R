@@ -432,6 +432,7 @@ remove_redundant_hits <-  function(blast_output_tbl,
 #' On subsequent runs or in a first run you may supply taxonomy column ('taxid') in input tibble,
 #' which will reduce the time to find taxonomy ids and directly
 #' assign the taxonomy level to given taxonomy id.
+#' To map taxonomy levels for large number of ncbi accession one may choose parallel processing approach as shown in the example.
 #' @return a tbl.
 #' @export
 #' @importFrom tibble is_tibble
@@ -442,24 +443,44 @@ remove_redundant_hits <-  function(blast_output_tbl,
 #' @importFrom TidyWrappers tbl_keep_rows_NA_any
 #' @examples
 #' \dontrun{
-#'  f <- system.file("extdata","blast_output_01.txt" ,package = "phyloR")
-#'  d <- readr::read_delim(f, delim ="\t" , col_names = F , comment = "#")
-#'  colnames(d) <- phyloR::get_blast_outformat_7_colnames()
-#'  ## add kingdom
-#'  with_kingdom <- d %>%
-#'  dplyr::slice(1:50) %>%
-#'  add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver" )
-#'  ## add species
-#'  with_kingdom_and_species <- with_kingdom %>%
-#'  add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver",taxonomy_level = "species")
-#'  dplyr::glimpse(with_kingdom_and_species)
+#' f <- system.file("extdata","blast_output_01.txt" ,package = "phyloR")
+#' d <- readr::read_delim(f, delim ="\t" , col_names = F , comment = "#")
+#' colnames(d) <- phyloR::get_blast_outformat_7_colnames()
+#'
+#' ## add kingdom
+#' with_kingdom <- d %>%
+#'         dplyr::slice(1:50) %>%
+#'         add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver" )
+#'
+#' ## add species
+#' with_kingdom_and_species <- with_kingdom %>%
+#'         add_taxonomy_columns(ncbi_accession_colname ="subject_acc_ver",taxonomy_level = "species")
+#' dplyr::glimpse(with_kingdom_and_species)
+#'
+#' #------------------------------------
+#' ## using parallel processing approach
+#'
+#' library(furrr)
+#' num_of_splits <- 10
+#' d <- d %>% dplyr::slice(1:100)
+#' split_vec <- rep(1:num_of_splits , length.out = nrow(d))
+#' qq_split <- d %>% dplyr::mutate(split_vec = split_vec)  %>%
+#' dplyr::group_by(split_vec) %>% dplyr::group_split()
+#' future::plan("multiprocess")
+#' out <- qq_split[1:num_of_splits] %>%
+#'         future_map( ~ phyloR::add_taxonomy_columns(tbl = ..1 ,
+#'  taxonomy_level = "species" ,map_superkindom = F,
+#'  ncbi_accession_colname = "subject_acc_ver" , batch_size = 20,
+#'  ncbi_acc_key = "64c65ab9c52e0312bbcf4c32d3056cbcaa09"),
+#'                    .progress = TRUE) %>%
+#'         dplyr::bind_rows()
 #' }
 add_taxonomy_columns <- function(tbl,
                                  ncbi_accession_colname = "ncbi_accession",
-                                 ncbi_acc_key =NULL,
-                                 taxonomy_level = "kingdom",
-                                 map_superkindom = FALSE,
-                                 batch_size = 20 ){
+                                ncbi_acc_key =NULL,
+                                taxonomy_level = "kingdom",
+                                map_superkindom = FALSE,
+                                batch_size = 20 ){
 
         ## globle variable declaration
 
