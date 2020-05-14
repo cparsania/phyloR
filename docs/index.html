@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clean blast results for downstream phyloegentic analysis.  • phyloR</title>
+<title>Clean blast results for downstream phyloegentic analysis • phyloR</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Clean blast results for downstream phyloegentic analysis. ">
+<script src="pkgdown.js"></script><meta property="og:title" content="Clean blast results for downstream phyloegentic analysis">
 <meta property="og:description" content="phyloR is an R package to deal with NCBI-BLAST output. 
     It helps to pre-process BLAST tabular output for downstream phylogenetic analysis.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -245,7 +245,6 @@
 <p>BLAST reports same subject hit multiple time with different alignment co-ordinates. For a same subjet id, <code><a href="reference/remove_redundant_hits.html">phyloR::remove_redundant_hits()</a></code> select longest subject hit out of given multiples.</p>
 <div class="sourceCode" id="cb5"><pre class="r"><span class="no">blast_out_tbl</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/remove_redundant_hits.html">remove_redundant_hits</a></span>()
 <span class="co">#&gt; # A tibble: 716 x 13</span>
-<span class="co">#&gt; # Groups:   subject_acc_ver [716]</span>
 <span class="co">#&gt;    query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens</span>
 <span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;              &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span>
 <span class="co">#&gt;  1 KAE8371401.1  1FN8_A              31.6              209        127         6</span>
@@ -273,10 +272,10 @@
 
 <span class="co"># One can use function `Biostrings::writeXStringSet()` to write filterd sequences to new fasta file. </span></pre></div>
 </div>
-<div id="add-taxonomy-columns-to-blast-tabular-output" class="section level2">
+<div id="assign-taxonomy-columns-to-ncbi-protein-acession" class="section level2">
 <h2 class="hasAnchor">
-<a href="#add-taxonomy-columns-to-blast-tabular-output" class="anchor"></a>Add taxonomy columns to blast tabular output</h2>
-<p>Adding taxonomy details to blast output is very crucial for downstream phylogenetic analysis. For example, a phylogenetic tree generated from sequence of blast output often required to color tree branches either by kingdom, family or any other taxonomical level. <code><a href="reference/add_taxonomy_columns.html">phyloR::add_taxonomy_columns()</a></code> adds user required taxonomy columns to blast tabular output.</p>
+<a href="#assign-taxonomy-columns-to-ncbi-protein-acession" class="anchor"></a>Assign taxonomy columns to NCBI protein acession.</h2>
+<p>phyloR allows you to assign NCBI taxonomy levels to NCBI protein accession using function <code><a href="reference/add_taxonomy_columns.html">phyloR::add_taxonomy_columns()</a></code>. One of the applications of this function is to assign the NCBI taxonomy levels to blast output, which is required for downstream phylogenetic analysis. For example, a phylogenetic tree generated from blast hits often required to color resultant tree branches either by kingdom, family or any other NCBI taxonomy level. One can easily identify these taxonomy levels using function <code><a href="reference/add_taxonomy_columns.html">phyloR::add_taxonomy_columns()</a></code></p>
 <div class="sourceCode" id="cb7"><pre class="r">
 <span class="co">## add kingdom</span>
 
@@ -285,14 +284,14 @@
 <span class="co">#&gt; No ENTREZ API key provided</span>
 <span class="co">#&gt;  Get one via taxize::use_entrez()</span>
 <span class="co">#&gt; See https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/</span>
-<span class="co">#&gt; ✓ Done.  Time taken 5.21</span>
-<span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ Done.  Time taken 6.75</span>
+<span class="co">#&gt; ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ● Rank search begins...</span>
-<span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; ✓ Done.  Time taken 0.08</span>
+<span class="co">#&gt; ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ Done.  Time taken 0.07</span>
 
 
-<span class="no">with_kingdom</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">query_acc_ver</span>, <span class="no">subject_acc_ver</span>, <span class="no">kingdom</span>)
+<span class="no">with_kingdom</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span>(<span class="no">query_acc_ver</span>, <span class="no">subject_acc_ver</span>, <span class="no">kingdom</span>)
 <span class="co">#&gt; # A tibble: 10 x 3</span>
 <span class="co">#&gt;    query_acc_ver subject_acc_ver kingdom</span>
 <span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;           &lt;chr&gt;  </span>
@@ -311,15 +310,15 @@
 
 <span class="no">with_kingdom_and_family</span> <span class="kw">&lt;-</span> <span class="no">with_kingdom</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/add_taxonomy_columns.html">add_taxonomy_columns</a></span>(<span class="kw">ncbi_accession_colname</span> <span class="kw">=</span> <span class="st">"subject_acc_ver"</span> ,
                                                                   <span class="kw">taxonomy_level</span> <span class="kw">=</span> <span class="st">"family"</span>)
-<span class="co">#&gt; ── WARNING ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.</span>
 <span class="co">#&gt; ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.</span>
-<span class="co">#&gt; ── WARNING ENDS ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ENDS ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ● Rank search begins...</span>
-<span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ✓ Done.  Time taken 0.05</span>
 
-<span class="no">with_kingdom_and_family</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">query_acc_ver</span>, <span class="no">subject_acc_ver</span>, <span class="no">kingdom</span>, <span class="no">family</span> )
+<span class="no">with_kingdom_and_family</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span>(<span class="no">query_acc_ver</span>, <span class="no">subject_acc_ver</span>, <span class="no">kingdom</span>, <span class="no">family</span> )
 <span class="co">#&gt; # A tibble: 10 x 4</span>
 <span class="co">#&gt;    query_acc_ver subject_acc_ver kingdom family        </span>
 <span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;           &lt;chr&gt;   &lt;chr&gt;         </span>
@@ -338,15 +337,15 @@
 
 <span class="no">with_kingdom_family_and_species</span> <span class="kw">&lt;-</span> <span class="no">with_kingdom_and_family</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/add_taxonomy_columns.html">add_taxonomy_columns</a></span>(<span class="kw">ncbi_accession_colname</span> <span class="kw">=</span> <span class="st">"subject_acc_ver"</span> ,
                                                                   <span class="kw">taxonomy_level</span> <span class="kw">=</span> <span class="st">"species"</span>)
-<span class="co">#&gt; ── WARNING ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.</span>
 <span class="co">#&gt; ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.</span>
-<span class="co">#&gt; ── WARNING ENDS ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ENDS ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ● Rank search begins...</span>
-<span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ✓ Done.  Time taken 0.04</span>
 
-<span class="no">with_kingdom_family_and_species</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">query_acc_ver</span>, <span class="no">subject_acc_ver</span>, <span class="no">kingdom</span>, <span class="no">family</span> ,<span class="no">species</span>)
+<span class="no">with_kingdom_family_and_species</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span>(<span class="no">query_acc_ver</span>, <span class="no">subject_acc_ver</span>, <span class="no">kingdom</span>, <span class="no">family</span> ,<span class="no">species</span>)
 <span class="co">#&gt; # A tibble: 10 x 5</span>
 <span class="co">#&gt;    query_acc_ver subject_acc_ver kingdom family         species                 </span>
 <span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;           &lt;chr&gt;   &lt;chr&gt;          &lt;chr&gt;                   </span>

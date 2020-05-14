@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add taxonomy annotations to blast tabular output — add_taxonomy_columns • phyloR</title>
+<title>Add ncbi taxonomy levels to ncbi protein accession — add_taxonomy_columns • phyloR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Add taxonomy annotations to blast tabular output — add_taxonomy_columns" />
-<meta property="og:description" content="Given a tbl with a column of valid ncbi accession,  the function can add taxonomic annotations for each row." />
+<meta property="og:title" content="Add ncbi taxonomy levels to ncbi protein accession — add_taxonomy_columns" />
+<meta property="og:description" content="Given a tbl with a column of valid ncbi protein accession,
+the function assigns the ncbi taxonomy levels to each ncbi protein accession." />
 
 
 
@@ -89,7 +90,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/cparsania/phyloR/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -103,13 +109,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add taxonomy annotations to blast tabular output</h1>
-    
+    <h1>Add ncbi taxonomy levels to ncbi protein accession</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cparsania/phyloR/blob/master/R/blast_result_parser.R'><code>R/blast_result_parser.R</code></a></small>
     <div class="hidden name"><code>add_taxonomy_columns.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Given a tbl with a column of valid ncbi accession,  the function can add taxonomic annotations for each row.</p>
+    <p>Given a tbl with a column of valid ncbi protein accession,
+the function assigns the ncbi taxonomy levels to each ncbi protein accession.</p>
     </div>
 
     <pre class="usage"><span class='fu'>add_taxonomy_columns</span>(
@@ -117,7 +124,7 @@
   <span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span> <span class='st'>"ncbi_accession"</span>,
   <span class='kw'>ncbi_acc_key</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>taxonomy_level</span> <span class='kw'>=</span> <span class='st'>"kingdom"</span>,
-  <span class='kw'>map_superkindom</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>map_superkindom</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>20</span>
 )</pre>
 
@@ -138,7 +145,7 @@
     </tr>
     <tr>
       <th>taxonomy_level</th>
-      <td><p>a string indicating level of taxonomy to be mapped. Can be one of the followings</p><ol>
+      <td><p>a string indicating level of ncbi taxonomy to be assigned to each ncbi protein accession. An input can be one of the followings</p><ol>
 <li><p>superkingdom</p></li>
 <li><p>kingdom</p></li>
 <li><p>phylum</p></li>
@@ -161,7 +168,7 @@
     </tr>
     <tr>
       <th>map_superkindom</th>
-      <td><p>logical (default TRUE). map superkingdom if kingdom not found. Valid only when taxonomy_level == "kingdom".</p></td>
+      <td><p>logical (default FALSE). Assign superkingdom if kingdom is not found. Valid only when taxonomy_level == "kingdom".</p></td>
     </tr>
     <tr>
       <th>batch_size</th>
@@ -172,18 +179,51 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a tbl.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The aim of this function is to assign the specific level of ncbi taxonomy to the ncbi accession (protein).
+To do so, it requires a tibble with at least one column of ncbi (protein) accession.
+Returned taxonomy columns will be added on input tibble object keeping original columns as they were.
+Internally, first, it finds the ncbi taxonomy id for each ncbi accession and then it maps required taxonomy level.
+Assigning taxonomy id to each ncbi accession may take time depending upon number of input ncbi accessions.
+On subsequent runs or in a first run you may supply taxonomy column ('taxid') in input tibble,
+which will reduce the time to find taxonomy ids and directly
+assign the taxonomy level to given taxonomy id.
+To map taxonomy levels for large number of ncbi accession one may choose parallel processing approach as shown in the example.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
- <span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,<span class='st'>"blast_output_01.txt"</span> ,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"phyloR"</span>)
- <span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>readr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/readr/man/read_delim.html'>read_delim</a></span>(<span class='no'>f</span>, <span class='kw'>delim</span> <span class='kw'>=</span><span class='st'>"\t"</span> , <span class='kw'>col_names</span> <span class='kw'>=</span> <span class='no'>F</span> , <span class='kw'>comment</span> <span class='kw'>=</span> <span class='st'>"#"</span>)
- <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>d</span>) <span class='kw'>&lt;-</span> <span class='kw pkg'>phyloR</span><span class='kw ns'>::</span><span class='fu'><a href='get_blast_outformat_7_colnames.html'>get_blast_outformat_7_colnames</a></span>()
- <span class='co'>## add kingdom</span>
- <span class='no'>with_kingdom</span> <span class='kw'>&lt;-</span> <span class='no'>d</span> <span class='kw'>%&gt;%</span>  <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/slice.html'>slice</a></span>(<span class='fl'>1</span>:<span class='fl'>50</span>) <span class='kw'>%&gt;%</span> <span class='fu'>add_taxonomy_columns</span>(<span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span><span class='st'>"subject_acc_ver"</span> )
- <span class='co'>## add species</span>
- <span class='no'>with_kingdom_and_species</span> <span class='kw'>&lt;-</span> <span class='no'>with_kingdom</span> <span class='kw'>%&gt;%</span> <span class='fu'>add_taxonomy_columns</span>(<span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span><span class='st'>"subject_acc_ver"</span>,
- <span class='kw'>taxonomy_level</span> <span class='kw'>=</span> <span class='st'>"species"</span>)
- <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>glimpse</a></span>(<span class='no'>with_kingdom_and_species</span>)
+<span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,<span class='st'>"blast_output_01.txt"</span> ,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"phyloR"</span>)
+<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>readr</span><span class='kw ns'>::</span><span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_delim</a></span>(<span class='no'>f</span>, <span class='kw'>delim</span> <span class='kw'>=</span><span class='st'>"\t"</span> , <span class='kw'>col_names</span> <span class='kw'>=</span> <span class='no'>F</span> , <span class='kw'>comment</span> <span class='kw'>=</span> <span class='st'>"#"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>d</span>) <span class='kw'>&lt;-</span> <span class='kw pkg'>phyloR</span><span class='kw ns'>::</span><span class='fu'><a href='get_blast_outformat_7_colnames.html'>get_blast_outformat_7_colnames</a></span>()
+
+<span class='co'>## add kingdom</span>
+<span class='no'>with_kingdom</span> <span class='kw'>&lt;-</span> <span class='no'>d</span> <span class='kw'>%&gt;%</span>
+        <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/slice.html'>slice</a></span>(<span class='fl'>1</span>:<span class='fl'>50</span>) <span class='kw'>%&gt;%</span>
+        <span class='fu'>add_taxonomy_columns</span>(<span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span><span class='st'>"subject_acc_ver"</span> )
+
+<span class='co'>## add species</span>
+<span class='no'>with_kingdom_and_species</span> <span class='kw'>&lt;-</span> <span class='no'>with_kingdom</span> <span class='kw'>%&gt;%</span>
+        <span class='fu'>add_taxonomy_columns</span>(<span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span><span class='st'>"subject_acc_ver"</span>,<span class='kw'>taxonomy_level</span> <span class='kw'>=</span> <span class='st'>"species"</span>)
+<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/reexports.html'>glimpse</a></span>(<span class='no'>with_kingdom_and_species</span>)
+
+<span class='co'>#------------------------------------</span>
+<span class='co'>## using parallel processing approach</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>furrr</span>)
+<span class='no'>num_of_splits</span> <span class='kw'>&lt;-</span> <span class='fl'>10</span>
+<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>d</span> <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/slice.html'>slice</a></span>(<span class='fl'>1</span>:<span class='fl'>100</span>)
+<span class='no'>split_vec</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>:<span class='no'>num_of_splits</span> , <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>d</span>))
+<span class='no'>qq_split</span> <span class='kw'>&lt;-</span> <span class='no'>d</span> <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/mutate.html'>mutate</a></span>(<span class='kw'>split_vec</span> <span class='kw'>=</span> <span class='no'>split_vec</span>)  <span class='kw'>%&gt;%</span>
+<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/group_by.html'>group_by</a></span>(<span class='no'>split_vec</span>) <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/group_split.html'>group_split</a></span>()
+<span class='kw pkg'>future</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/future/man/plan.html'>plan</a></span>(<span class='st'>"multiprocess"</span>)
+<span class='no'>out</span> <span class='kw'>&lt;-</span> <span class='no'>qq_split</span>[<span class='fl'>1</span>:<span class='no'>num_of_splits</span>] <span class='kw'>%&gt;%</span>
+        <span class='fu'><a href='https://rdrr.io/pkg/furrr/man/future_map.html'>future_map</a></span>( ~ <span class='kw pkg'>phyloR</span><span class='kw ns'>::</span><span class='fu'>add_taxonomy_columns</span>(<span class='kw'>tbl</span> <span class='kw'>=</span> <span class='no'>..1</span> ,
+ <span class='kw'>taxonomy_level</span> <span class='kw'>=</span> <span class='st'>"species"</span> ,<span class='kw'>map_superkindom</span> <span class='kw'>=</span> <span class='no'>F</span>,
+ <span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span> <span class='st'>"subject_acc_ver"</span> , <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>20</span>,
+ <span class='kw'>ncbi_acc_key</span> <span class='kw'>=</span> <span class='st'>"64c65ab9c52e0312bbcf4c32d3056cbcaa09"</span>),
+                   <span class='kw'>.progress</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
+        <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/bind.html'>bind_rows</a></span>()
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -211,7 +211,6 @@ select longest subject hit out of given multiples.
 ``` r
 blast_out_tbl %>% phyloR::remove_redundant_hits()
 #> # A tibble: 716 x 13
-#> # Groups:   subject_acc_ver [716]
 #>    query_acc_ver subject_acc_ver identity alignment_length mismatches gap_opens
 #>    <chr>         <chr>              <dbl>            <dbl>      <dbl>     <dbl>
 #>  1 KAE8371401.1  1FN8_A              31.6              209        127         6
@@ -245,14 +244,16 @@ seq_filtered <- phyloR::subset_bstringset(x = query_headers , y = fa, partial_ma
 # One can use function `Biostrings::writeXStringSet()` to write filterd sequences to new fasta file. 
 ```
 
-## Add taxonomy columns to blast tabular output
+## Assign taxonomy columns to NCBI protein acession.
 
-Adding taxonomy details to blast output is very crucial for downstream
-phylogenetic analysis. For example, a phylogenetic tree generated from
-sequence of blast output often required to color tree branches either by
-kingdom, family or any other taxonomical level.
-`phyloR::add_taxonomy_columns()` adds user required taxonomy columns to
-blast tabular output.
+phyloR allows you to assign NCBI taxonomy levels to NCBI protein
+accession using function `phyloR::add_taxonomy_columns()`. One of the
+applications of this function is to assign the NCBI taxonomy levels to
+blast output, which is required for downstream phylogenetic analysis.
+For example, a phylogenetic tree generated from blast hits often
+required to color resultant tree branches either by kingdom, family or
+any other NCBI taxonomy level. One can easily identify these taxonomy
+levels using function `phyloR::add_taxonomy_columns()`
 
 ``` r
 
@@ -263,11 +264,11 @@ with_kingdom <- blast_out_tbl %>% slice(1:10) %>%
 #> No ENTREZ API key provided
 #>  Get one via taxize::use_entrez()
 #> See https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
-#> ✓ Done.  Time taken 5.21
-#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 6.75
+#> ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
-#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ Done.  Time taken 0.08
+#> ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.07
 
 
 with_kingdom %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom)
@@ -289,12 +290,12 @@ with_kingdom %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom)
 
 with_kingdom_and_family <- with_kingdom %>% phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver" ,
                                                                   taxonomy_level = "family")
-#> ── WARNING ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.
 #> ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.
-#> ── WARNING ENDS ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ENDS ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
-#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ✓ Done.  Time taken 0.05
 
 with_kingdom_and_family %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom, family )
@@ -316,12 +317,12 @@ with_kingdom_and_family %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdo
 
 with_kingdom_family_and_species <- with_kingdom_and_family %>% phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver" ,
                                                                   taxonomy_level = "species")
-#> ── WARNING ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.
 #> ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.
-#> ── WARNING ENDS ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ENDS ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
-#> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ✓ Done.  Time taken 0.04
 
 with_kingdom_family_and_species %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom, family ,species)

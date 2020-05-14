@@ -2,7 +2,7 @@
 % Please edit documentation in R/blast_result_parser.R
 \name{add_taxonomy_columns}
 \alias{add_taxonomy_columns}
-\title{Add taxonomy annotations to blast tabular output}
+\title{Add ncbi taxonomy levels to ncbi protein accession}
 \usage{
 add_taxonomy_columns(
   tbl,
@@ -20,7 +20,7 @@ add_taxonomy_columns(
 
 \item{ncbi_acc_key}{user specific ENTREZ api key. Get one via \code{taxize::use_entrez()}}
 
-\item{taxonomy_level}{a string indicating level of taxonomy to be assigned to each ncbi accession. Can be one of the followings
+\item{taxonomy_level}{a string indicating level of ncbi taxonomy to be assigned to each ncbi protein accession. An input can be one of the followings
 \enumerate{
 \item superkingdom
 \item kingdom
@@ -50,7 +50,8 @@ add_taxonomy_columns(
 a tbl.
 }
 \description{
-Given a tbl with a column of valid ncbi accession,  the function can add taxonomic annotations for each row.
+Given a tbl with a column of valid ncbi protein accession,
+the function assigns the ncbi taxonomy levels to each ncbi protein accession.
 }
 \details{
 The aim of this function is to assign the specific level of ncbi taxonomy to the ncbi accession (protein).

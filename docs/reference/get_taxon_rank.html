@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get phylogenetic rank for a given ncbi taxonomy id. — get_taxon_rank • phyloR</title>
+<title>Get ncbi phylogeny level for a given ncbi taxonomy id. — get_taxon_rank • phyloR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Get phylogenetic rank for a given ncbi taxonomy id. — get_taxon_rank" />
-<meta property="og:description" content="Get phylogenetic rank for a given ncbi taxonomy id." />
+<meta property="og:title" content="Get ncbi phylogeny level for a given ncbi taxonomy id. — get_taxon_rank" />
+<meta property="og:description" content="Get ncbi phylogeny level for a given ncbi taxonomy id." />
 
 
 
@@ -89,7 +89,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/cparsania/phyloR/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -103,13 +108,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get phylogenetic rank for a given ncbi taxonomy id.</h1>
-    
+    <h1>Get ncbi phylogeny level for a given ncbi taxonomy id.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cparsania/phyloR/blob/master/R/blast_result_parser.R'><code>R/blast_result_parser.R</code></a></small>
     <div class="hidden name"><code>get_taxon_rank.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get phylogenetic rank for a given ncbi taxonomy id.</p>
+    <p>Get ncbi phylogeny level for a given ncbi taxonomy id.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_taxon_rank</span>(<span class='no'>x</span>, <span class='kw'>rank</span> <span class='kw'>=</span> <span class='st'>"kingdom"</span>)</pre>
@@ -123,7 +128,7 @@
     </tr>
     <tr>
       <th>rank</th>
-      <td><p>a character string indicating required phylogenetic rank. Default "kingdom". Can be one of the following</p><ol>
+      <td><p>a string denoting required ncbi phylogenetic level. Default "kingdom". An input can be one of the followings</p><ol>
 <li><p>superkingdom</p></li>
 <li><p>kingdom</p></li>
 <li><p>phylum</p></li>

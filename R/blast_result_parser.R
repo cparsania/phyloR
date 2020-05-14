@@ -1,9 +1,9 @@
 
-#' Wrapper function around taxize::genbank2uid.
+#' A Wrapper function around \link{taxize::genbank2uid}.
 #'
-#' Given a genBank accession alphanumeric string or a gi numeric string \code{(x)}, it returns tibble of taxid, name and other related columns.
-#' @param x vector of genBank accession alphanumeric string, or a gi numeric string \code{(x)}.
-#' @param ... other parameters to be passed to \code{taxize::genbank2uid}
+#' Given a ncbi gene bank accession alphanumeric string or a gi numeric string \code{(x)}, it returns a tibble contaning ncbi taxonomy id, name and other related columns.
+#' @param x vector of ncbi gene bank accession alphanumeric string, or a gi numeric string \code{(x)}.
+#' @param ... other parameters to be passed to \code{taxize::genbank2uid}.
 #'
 #' @return a tbl with colnames x, taxid, class, match, multiple_matches, pattern_match, uri, name
 #' @export
@@ -33,11 +33,11 @@ genbank2uid_tbl <- function(x , ...){
 
 
 
-#' Get phylogenetic rank for a given ncbi taxonomy id.
+#' Get ncbi phylogeny level for a given ncbi taxonomy id.
 #'
 #'
 #' @param x a vector of valid ncbi taxonomy id.
-#' @param rank a character string indicating required phylogenetic rank. Default "kingdom". Can be one of the following
+#' @param rank a string denoting required ncbi phylogenetic level. Default "kingdom". An input can be one of the followings
 #' \enumerate{
 #' \item superkingdom
 #' \item kingdom
@@ -336,13 +336,14 @@ get_subj_cov <- function(sstart , send , slen){
 
 #' Remove redundant hits from blast tabular output
 #'
-#' @description Given the output of blast tabular format in a tbl, it removes redundancy subject hit accession. For each redundant hit longest hit will be returned.
+#' @description Given the output of blast tabular format in a tbl, it removes redundant hits by subject accession.
+#' For each redundant hit longest hit will be kept.
 #'
-#' @param blast_output_tbl an object of class tbl containing blast tabular output
-#' @param subject_start_colname a string denoting a column of subject start. Default "s_start"
-#' @param subject_end_colname a string denoting a column of subject end Default "s_end"
+#' @param blast_output_tbl an object of class tbl containing blast tabular output.
+#' @param subject_start_colname a string denoting a column of subject start. Default "s_start".
+#' @param subject_end_colname a string denoting a column of subject end. Default "s_end".
 #' @param keep_length logical, default FALSE, indicates whether to keep column of subject length.
-#' @param subject_acc_colname a string denoting a column of subject hits in a \code{blast_output_tbl}. Default "subject_acc_ver"
+#' @param subject_acc_colname a string denoting a column of subject hits in a \code{blast_output_tbl}. Default "subject_acc_ver".
 #'
 #' @return a tbl
 #' @export
@@ -394,14 +395,15 @@ remove_redundant_hits <-  function(blast_output_tbl,
 
 ## Given the blast hits in tabular format add taxonomy annotations
 
-#' Add taxonomy annotations to blast tabular output
+#' Add ncbi taxonomy levels to ncbi protein accession
 #'
-#' @description Given a tbl with a column of valid ncbi accession,  the function can add taxonomic annotations for each row.
+#' @description Given a tbl with a column of valid ncbi protein accession,
+#' the function assigns the ncbi taxonomy levels to each ncbi protein accession.
 #'
 #' @param tbl an object of class tbl
 #' @param ncbi_accession_colname a string (default : "ncbi_accession") denoting column name of ncbi accession.
 #' @param ncbi_acc_key user specific ENTREZ api key. Get one via \code{taxize::use_entrez()}
-#' @param taxonomy_level a string indicating level of taxonomy to be assigned to each ncbi accession. Can be one of the followings
+#' @param taxonomy_level a string indicating level of ncbi taxonomy to be assigned to each ncbi protein accession. An input can be one of the followings
 #' \enumerate{
 #' \item superkingdom
 #' \item kingdom

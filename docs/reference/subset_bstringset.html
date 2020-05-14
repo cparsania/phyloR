@@ -89,7 +89,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/cparsania/phyloR/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -104,7 +109,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get records from BStringset</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/cparsania/phyloR/blob/master/R/blast_result_parser.R'><code>R/blast_result_parser.R</code></a></small>
     <div class="hidden name"><code>subset_bstringset.Rd</code></div>
     </div>
 
@@ -140,7 +145,26 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>x</span> <span class='kw'>&lt;-</span>  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"EIT75269.1"</span>, <span class='st'>"TGO19408.1"</span>, <span class='st'>"KAF2153260.1"</span>, <span class='st'>"OAA41719.1"</span>, <span class='st'>"OSS52177.1"</span>, <span class='st'>"XP_018252424.1"</span>, <span class='st'>"XP_008598593.1"</span>, <span class='st'>"KXN65110.1"</span>, <span class='st'>"XP_018147989.1"</span>, <span class='st'>"XP_022493698.1"</span>, <span class='st'>"RII05464.1"</span>, <span class='st'>"XP_018703519.1"</span>, <span class='st'>"RZR67285.1"</span>, <span class='st'>"OLY78428.1"</span>, <span class='st'>"XP_007819064.1"</span>, <span class='st'>"PQK17331.1"</span>, <span class='st'>"KXN66278.1"</span>, <span class='st'>"CRK21695.1"</span>, <span class='st'>"CVK85925.1"</span>, <span class='st'>"KID81639.1"</span>)
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"EIT75269.1"</span>,
+  <span class='st'>"TGO19408.1"</span>,
+  <span class='st'>"KAF2153260.1"</span>,
+  <span class='st'>"OAA41719.1"</span>,
+  <span class='st'>"OSS52177.1"</span>,
+  <span class='st'>"XP_018252424.1"</span>,
+  <span class='st'>"XP_008598593.1"</span>,
+  <span class='st'>"KXN65110.1"</span>,
+  <span class='st'>"XP_018147989.1"</span>,
+  <span class='st'>"XP_022493698.1"</span>,
+  <span class='st'>"RII05464.1"</span>,
+  <span class='st'>"XP_018703519.1"</span>,
+  <span class='st'>"RZR67285.1"</span>,
+  <span class='st'>"OLY78428.1"</span>,
+  <span class='st'>"XP_007819064.1"</span>,
+  <span class='st'>"PQK17331.1"</span>,
+  <span class='st'>"KXN66278.1"</span>,
+  <span class='st'>"CRK21695.1"</span>,
+  <span class='st'>"CVK85925.1"</span>,
+  <span class='st'>"KID81639.1"</span>)
 <span class='no'>y_file</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span> ,<span class='st'>"blast_output_01.fasta"</span> , <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"phyloR"</span>)
 <span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>Biostrings</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/Biostrings/man/XStringSet-io.html'>readBStringSet</a></span>(<span class='no'>y_file</span>)
 <span class='co'>## subset fasta by partial match</span>

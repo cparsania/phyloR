@@ -13,13 +13,13 @@ remove_redundant_hits(
 )
 }
 \arguments{
-\item{blast_output_tbl}{an object of class tbl containing blast tabular output}
+\item{blast_output_tbl}{an object of class tbl containing blast tabular output.}
 
-\item{subject_acc_colname}{a string denoting a column of subject hits in a \code{blast_output_tbl}. Default "subject_acc_ver"}
+\item{subject_acc_colname}{a string denoting a column of subject hits in a \code{blast_output_tbl}. Default "subject_acc_ver".}
 
-\item{subject_start_colname}{a string denoting a column of subject start. Default "s_start"}
+\item{subject_start_colname}{a string denoting a column of subject start. Default "s_start".}
 
-\item{subject_end_colname}{a string denoting a column of subject end Default "s_end"}
+\item{subject_end_colname}{a string denoting a column of subject end. Default "s_end".}
 
 \item{keep_length}{logical, default FALSE, indicates whether to keep column of subject length.}
 }
@@ -27,7 +27,8 @@ remove_redundant_hits(
 a tbl
 }
 \description{
-Given the output of blast tabular format in a tbl, it removes redundancy subject hit accession. For each redundant hit longest hit will be returned.
+Given the output of blast tabular format in a tbl, it removes redundant hits by subject accession.
+For each redundant hit longest hit will be kept.
 }
 \examples{
 \dontrun{

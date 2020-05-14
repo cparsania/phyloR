@@ -151,9 +151,9 @@ seq_filtered <- phyloR::subset_bstringset(x = query_headers , y = fa, partial_ma
 ```
 
 
-## Add taxonomy columns to blast tabular output
+## Assign taxonomy columns to NCBI protein acession. 
 
-Adding taxonomy details to blast output is very crucial for downstream phylogenetic analysis. For example, a phylogenetic tree generated from sequence of blast output often required  to color tree branches either by kingdom, family or any other taxonomical level. `phyloR::add_taxonomy_columns()` adds user required taxonomy columns to blast tabular output. 
+phyloR allows you to assign NCBI taxonomy levels to NCBI protein accession using function `phyloR::add_taxonomy_columns()`. One of the applications of this function is to assign the NCBI taxonomy levels to blast output, which is required for downstream phylogenetic analysis. For example, a phylogenetic tree generated from blast hits often required to color resultant tree branches either by kingdom, family or any other NCBI taxonomy level.  One can easily identify these taxonomy levels using function `phyloR::add_taxonomy_columns()`
 
 ```{r, echo=TRUE, message = TRUE, warning = FALSE}
 

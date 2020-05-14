@@ -2,14 +2,14 @@
 % Please edit documentation in R/blast_result_parser.R
 \name{get_taxon_rank}
 \alias{get_taxon_rank}
-\title{Get phylogenetic rank for a given ncbi taxonomy id.}
+\title{Get ncbi phylogeny level for a given ncbi taxonomy id.}
 \usage{
 get_taxon_rank(x, rank = "kingdom")
 }
 \arguments{
 \item{x}{a vector of valid ncbi taxonomy id.}
 
-\item{rank}{a character string indicating required phylogenetic rank. Default "kingdom". Can be one of the following
+\item{rank}{a string denoting required ncbi phylogenetic level. Default "kingdom". An input can be one of the followings
 \enumerate{
 \item superkingdom
 \item kingdom
@@ -41,7 +41,7 @@ a tbl with the below column.
 }
 }
 \description{
-Get phylogenetic rank for a given ncbi taxonomy id.
+Get ncbi phylogeny level for a given ncbi taxonomy id.
 }
 \examples{
 \dontrun{

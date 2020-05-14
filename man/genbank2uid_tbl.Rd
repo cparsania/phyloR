@@ -2,20 +2,20 @@
 % Please edit documentation in R/blast_result_parser.R
 \name{genbank2uid_tbl}
 \alias{genbank2uid_tbl}
-\title{Wrapper function around taxize::genbank2uid.}
+\title{A Wrapper function around \link{taxize::genbank2uid}.}
 \usage{
 genbank2uid_tbl(x, ...)
 }
 \arguments{
-\item{x}{vector of genBank accession alphanumeric string, or a gi numeric string \code{(x)}.}
+\item{x}{vector of ncbi gene bank accession alphanumeric string, or a gi numeric string \code{(x)}.}
 
-\item{...}{other parameters to be passed to \code{taxize::genbank2uid}}
+\item{...}{other parameters to be passed to \code{taxize::genbank2uid}.}
 }
 \value{
 a tbl with colnames x, taxid, class, match, multiple_matches, pattern_match, uri, name
 }
 \description{
-Given a genBank accession alphanumeric string or a gi numeric string \code{(x)}, it returns tibble of taxid, name and other related columns.
+Given a ncbi gene bank accession alphanumeric string or a gi numeric string \code{(x)}, it returns a tibble contaning ncbi taxonomy id, name and other related columns.
 }
 \examples{
 \dontrun{
