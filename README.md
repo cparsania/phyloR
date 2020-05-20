@@ -244,7 +244,7 @@ seq_filtered <- phyloR::subset_bstringset(x = query_headers , y = fa, partial_ma
 # One can use function `Biostrings::writeXStringSet()` to write filterd sequences to new fasta file. 
 ```
 
-## Assign taxonomy columns to NCBI protein acession.
+## Assign taxonomy columns to NCBI protein acession
 
 phyloR allows you to assign NCBI taxonomy levels to NCBI protein
 accession using function `phyloR::add_taxonomy_columns()`. One of the
@@ -264,11 +264,11 @@ with_kingdom <- blast_out_tbl %>% slice(1:10) %>%
 #> No ENTREZ API key provided
 #>  Get one via taxize::use_entrez()
 #> See https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
-#> ✓ Done.  Time taken 6.75
-#> ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 3.3
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
-#> ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ Done.  Time taken 0.07
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.08
 
 
 with_kingdom %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom)
@@ -290,13 +290,13 @@ with_kingdom %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom)
 
 with_kingdom_and_family <- with_kingdom %>% phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver" ,
                                                                   taxonomy_level = "family")
-#> ── WARNING ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.
 #> ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.
-#> ── WARNING ENDS ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
-#> ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ Done.  Time taken 0.05
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.06
 
 with_kingdom_and_family %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom, family )
 #> # A tibble: 10 x 4
@@ -317,13 +317,13 @@ with_kingdom_and_family %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdo
 
 with_kingdom_family_and_species <- with_kingdom_and_family %>% phyloR::add_taxonomy_columns(ncbi_accession_colname = "subject_acc_ver" ,
                                                                   taxonomy_level = "species")
-#> ── WARNING ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.
 #> ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.
-#> ── WARNING ENDS ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
-#> ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ Done.  Time taken 0.04
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.05
 
 with_kingdom_family_and_species %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom, family ,species)
 #> # A tibble: 10 x 5
@@ -340,3 +340,74 @@ with_kingdom_family_and_species %>% dplyr::select(query_acc_ver, subject_acc_ver
 #>  9 KAE8371401.1  OQD86157.1      Fungi   Aspergillaceae Penicillium antarcticum 
 #> 10 KAE8371401.1  XP_002375911.1  Fungi   Aspergillaceae Aspergillus flavus
 ```
+
+## Use NCBI taxonomy levels to color the phyloegenetic tree
+
+An object of class `phylo` is widely used object to visualize the
+phylogenetic tree in R. To gain more insights from the resultant
+phylogenetic tree, often tree tips required to color by different levels
+of taxonomy, for instance species, kingdom or family. Obtaining taxonomy
+data to use them for tree annotations is not straight forward task and
+require lots of data wrangling in R. phyloR provides handy way to map
+such a taxonomy data to the phylogenetic tree. For example, one can
+convert an object of class `phylo` to an object of class `tibble` and
+vice versa. Once the tibble obtained, phyloR allows to add columns of
+ncbi taxonomy levels. Resultant tibble can be passed to
+`ggtree::ggtree()` to visualize the tree and taxonomy levels can be
+used, for instance, to color the tree tips.
+
+``` r
+
+tree_string <- "((XP_005187699_1__Musca_domestica:0.070627277,(XP_019893806_1__Musca_domestica:0.071069674,((XP_013113221_1__Stomoxys_calcitrans:0.1494662042,ACB98719_1__Glossina_morsitans_morsitans:0.3489851076)67.4/100:0.0470213767,XP_013102958_1__Stomoxys_calcitrans:0.1794878827)98.1/100:0.0959227604)88.2/99:0.0323598861)93/99:0.0435291148,((XP_017472861_1__Rhagoletis_zephyria:0.0049337059,XP_017472862_1__Rhagoletis_zephyria:0.0112391294)97.3/100:0.0860969479,(XP_020713236_1__Ceratitis_capitata:0.2642805176,(XP_014102010_1__Bactrocera_oleae:0.1183517872,XP_018784523_1__Bactrocera_latifrons:0.1137567198)29.6/88:0.0758551876)99.9/100:0.247740081)92/100:0.0716529011)34.3/66:2.487103817;"
+
+ tree_objct <- treeio::read.tree(text = tree_string)
+
+ tree_tbl <- tree_objct %>% 
+   ggtree::fortify()
+
+ tree_tbl <- tree_tbl  %>%
+         dplyr::mutate( seqid =  dplyr::case_when(isTip ~ stringr::str_replace(label , pattern = "__.*","" ) %>%  ## split by '__'
+                                                         stringr::str_replace(pattern = "_\\d$" , ""), ## remove trailing digits from seqid
+                                                  TRUE ~ label
+         )
+        )
+ ## add taxonomy
+ tree_tbl_with_taxonomy <- tree_tbl %>%
+        phyloR::tidy_taxonomy_tree(ncbi_accession_colname = "seqid",taxonomy_levels = c("species" ,"kingdom","family"))
+#> ✓ Done.  Time taken 1.79
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ● Rank search begins...
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.05
+#> ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ● Rank search begins...
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.06
+#> ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ● Rank search begins...
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ✓ Done.  Time taken 0.08
+
+ ## visualize  tree
+
+ # tips colored by species
+ tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = species))
+```
+
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+
+``` r
+ # tips colored by family
+ tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = family))
+```
+
+<img src="man/figures/README-unnamed-chunk-11-2.png" width="100%" />
+
+``` r
+ # tips colored by kingdom
+ tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = kingdom))
+```
+
+<img src="man/figures/README-unnamed-chunk-11-3.png" width="100%" />

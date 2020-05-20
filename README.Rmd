@@ -185,7 +185,7 @@ with_kingdom_family_and_species %>% dplyr::select(query_acc_ver, subject_acc_ver
 
 An object of class `phylo` is widely used object to visualize the phylogenetic tree in R. To gain more insights from the resultant phylogenetic tree, often tree tips required to color by different levels of taxonomy, for instance species, kingdom or family. Obtaining taxonomy data to use them for tree annotations is not straight forward task and require lots of data wrangling in R. phyloR provides handy way to map such a taxonomy data to the phylogenetic tree. For example, one can convert an object of class `phylo` to an object of class `tibble` and vice versa. Once the tibble obtained, phyloR allows to add columns of ncbi taxonomy levels. Resultant tibble can be passed to `ggtree::ggtree()` to visualize the tree and taxonomy levels can be used, for instance, to color the tree tips.
 
-```{r }
+```{r , message=FALSE,warning=FALSE}
 
 tree_string <- "((XP_005187699_1__Musca_domestica:0.070627277,(XP_019893806_1__Musca_domestica:0.071069674,((XP_013113221_1__Stomoxys_calcitrans:0.1494662042,ACB98719_1__Glossina_morsitans_morsitans:0.3489851076)67.4/100:0.0470213767,XP_013102958_1__Stomoxys_calcitrans:0.1794878827)98.1/100:0.0959227604)88.2/99:0.0323598861)93/99:0.0435291148,((XP_017472861_1__Rhagoletis_zephyria:0.0049337059,XP_017472862_1__Rhagoletis_zephyria:0.0112391294)97.3/100:0.0860969479,(XP_020713236_1__Ceratitis_capitata:0.2642805176,(XP_014102010_1__Bactrocera_oleae:0.1183517872,XP_018784523_1__Bactrocera_latifrons:0.1137567198)29.6/88:0.0758551876)99.9/100:0.247740081)92/100:0.0716529011)34.3/66:2.487103817;"
 
@@ -207,11 +207,11 @@ tree_string <- "((XP_005187699_1__Musca_domestica:0.070627277,(XP_019893806_1__M
  ## visualize  tree
 
  # tips colored by species
- tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(aes(color = species))
+ tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = species))
  # tips colored by family
- tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(aes(color = family))
+ tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = family))
  # tips colored by kingdom
- tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(aes(color = kingdom))
+ tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = kingdom))
 ```
 
 
