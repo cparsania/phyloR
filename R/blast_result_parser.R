@@ -7,10 +7,19 @@
 #'
 #' @return a tbl with colnames x, taxid, class, match, multiple_matches, pattern_match, uri, name
 #' @export
+#' @importFrom lubridate now
 #' @importFrom taxize genbank2uid
-#' @importFrom tibble tibble
-#' @importFrom dplyr bind_cols
-#' @importFrom purrr map_df
+#' @importFrom tibble tibble is_tibble
+#' @importFrom dplyr bind_cols filter left_join rename select group_by mutate arrange slice ungroup pull bind_rows coalesce mutate_all
+#' @importFrom purrr map_df map
+#' @importFrom rlang arg_match sym as_name as_string
+#' @importFrom cli cat_bullet cat_rule cli_alert_info
+#' @importFrom taxizedb classification
+#' @importFrom tidyr unnest unnest_wider
+#' @importFrom glue glue glue_data
+#' @importFrom TidyWrappers tbl_keep_rows_NA_any
+#' @importFrom Biostrings readBStringSet
+#' @importFrom stringr str_match_all str_trim str_match str_remove str_replace_all str_which fixed
 #' @importFrom methods is
 #' @examples
 #' \dontrun{
@@ -360,10 +369,10 @@ get_subj_cov <- function(sstart , send , slen){
 #'  remove_redundant_hits(d)
 #' }
 remove_redundant_hits <-  function(blast_output_tbl,
-                               subject_acc_colname = "subject_acc_ver" ,
-                               subject_start_colname = "s_start",
-                               subject_end_colname = "s_end" ,
-                               keep_length = FALSE){
+                                   subject_acc_colname = "subject_acc_ver" ,
+                                   subject_start_colname = "s_start",
+                                   subject_end_colname = "s_end" ,
+                                   keep_length = FALSE){
 
         if(!tibble::is_tibble(blast_output_tbl)){
                 stop("blast_output_tbl must be a class of tibble")
@@ -479,10 +488,10 @@ remove_redundant_hits <-  function(blast_output_tbl,
 #' }
 add_taxonomy_columns <- function(tbl,
                                  ncbi_accession_colname = "ncbi_accession",
-                                ncbi_acc_key =NULL,
-                                taxonomy_level = "kingdom",
-                                map_superkindom = FALSE,
-                                batch_size = 20 ){
+                                 ncbi_acc_key =NULL,
+                                 taxonomy_level = "kingdom",
+                                 map_superkindom = FALSE,
+                                 batch_size = 20 ){
 
         ## globle variable declaration
 
@@ -604,7 +613,7 @@ format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
 
         ## validate inputs
         if(!file.exists(fasta_file)){
-            stop("fasta_file does not exist.")
+                stop("fasta_file does not exist.")
         }
 
         fa_seq <- Biostrings::readBStringSet(fasta_file)
@@ -614,7 +623,7 @@ format_fasta_headers <- function(fasta_file = NULL, keep_alignemnt_coord= TRUE){
                 tibble::tibble(fa_headers = .) %>%
                 dplyr::mutate(header_elems = purrr::map(fa_headers ,
                                                         ~( stringr::str_match_all(string = ..1 , pattern = "([^\\s]+)\\s(.*)\\[(.*)\\]") %>%
-                                                                                unlist() ))) %>%
+                                                                   unlist() ))) %>%
                 tidyr::unnest_wider(col = header_elems) %>%
                 dplyr::select(-.data$...1) %>%
                 dplyr::rename(subject_id = "...2" ,
@@ -692,7 +701,7 @@ subset_bstringset <- function(x , y,  partial_match  = TRUE){
         }
 
         if(! methods::is(y , "BStringSet")){
-             stop("'y' must be an object of class 'BStringset'" )
+                stop("'y' must be an object of class 'BStringset'" )
         }
 
         fa_headers <- names(y)
@@ -715,5 +724,71 @@ subset_bstringset <- function(x , y,  partial_match  = TRUE){
 }
 
 
+#' Assign (NCBI) taxonomy levels to phylo convertible tibble.
+#'
+#' @param tree_data a tbl containing minimum columns required to create an object of class phylo.
+#' @param ncbi_accession_colname a string (default : "ncbi_accession") denoting column name of ncbi accession.
+#' @param taxonomy_levels a character vector containing levels of ncbi taxonomy.
+#' For each of these levels corresponding values will be mapped for ncbi accession.
+#'
+#' @description An object of class \code{phylo} can be converted to an object of class \code{tibble} and vice versa.
+#' The given function adds columns of ncbi taxonomy levels to the tibble created from class \code{phylo}.
+#' Resultant tibble can be passed to \code{ggtree::ggtree()} to visualize phylogenetic tree.
+#' Added taxonomy columns can be used for aesthetics such as tip color, node color etc.
+#' @return a tbl containing all columns from \code{tree_data} + columns of assigned taxonomy levels.
+#' @export
+#' @examples
+#' \dontrun{
+#' ## read tree from newick string
+#' tree_string <- "((XP_005187699_1__Musca_domestica:0.070627277,(XP_019893806_1__Musca_domestica:0.071069674,((XP_013113221_1__Stomoxys_calcitrans:0.1494662042,ACB98719_1__Glossina_morsitans_morsitans:0.3489851076)67.4/100:0.0470213767,XP_013102958_1__Stomoxys_calcitrans:0.1794878827)98.1/100:0.0959227604)88.2/99:0.0323598861)93/99:0.0435291148,((XP_017472861_1__Rhagoletis_zephyria:0.0049337059,XP_017472862_1__Rhagoletis_zephyria:0.0112391294)97.3/100:0.0860969479,(XP_020713236_1__Ceratitis_capitata:0.2642805176,(XP_014102010_1__Bactrocera_oleae:0.1183517872,XP_018784523_1__Bactrocera_latifrons:0.1137567198)29.6/88:0.0758551876)99.9/100:0.247740081)92/100:0.0716529011)34.3/66:2.487103817;"
+#' tree_objct <- read.tree(text = tree_string)
 
+#' tree_tbl <- tree_objct %>% ggtree::fortify()
+
+#' tree_tbl <- tree_tbl  %>%
+#'         dplyr::mutate( seqid =  dplyr::case_when(isTip ~ stringr::str_replace(label , pattern = "__.*","" ) %>%  ## split by '__'
+#'                                                         stringr::str_replace(pattern = "_\\d$" , ""), ## remove trailing digits from seqid
+#'                                                  TRUE ~ label
+#'         )
+#'        )
+#' ## add taxonomy
+#' tree_tbl_with_taxonomy <- tree_tbl %>%
+#'        phyloR::tidy_taxonomy_tree(ncbi_accession_colname = "seqid",taxonomy_levels = c("species" ,"kingdom","family"))
+#'
+#' ## visualize  tree
+#'
+#' # tips colored by species
+#' tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(aes(color = species))
+#' # tips colored by family
+#' tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(aes(color = family))
+#' # tips colored by kingdom
+#' tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(aes(color = kingdom))
+#' }
+tidy_taxonomy_tree <- function(tree_data,
+                               ncbi_accession_colname = "ncbi_accession",
+                               taxonomy_levels = c("species" ,"kingdom")){
+
+
+        rlang::arg_match(taxonomy_levels  , c("no rank", "superkingdom", "kingdom", "phylum", "subphylum", "class", "subclass", "infraclass", "cohort", "order", "suborder", "infraorder", "superfamily", "family", "subfamily", "genus", "species", "tribe"))
+
+        ## get accession column name
+        accession_col_name = rlang::sym(ncbi_accession_colname)
+
+        ## prepare accession column tibble
+        accession_tbl <- tree_data %>%
+                dplyr::filter(isTip) %>%
+                dplyr::select(!!accession_col_name)
+
+        ## map taxonomy levels
+        for (i in seq_len(length(taxonomy_levels))){
+                accession_tbl <- accession_tbl %>%
+                        phyloR::add_taxonomy_columns(ncbi_accession_colname = rlang::as_string(accession_col_name),
+                                                     taxonomy_level = taxonomy_levels[i])
+        }
+        ## add taxonomy to tree data
+        tree_data_with_taxonomy <- tree_data %>%
+                dplyr::left_join(accession_tbl , by = rlang::as_string(accession_col_name))
+
+
+}
 

@@ -199,23 +199,23 @@ To map taxonomy levels for large number of ncbi accession one may choose paralle
 
 <span class='co'>## add kingdom</span>
 <span class='no'>with_kingdom</span> <span class='kw'>&lt;-</span> <span class='no'>d</span> <span class='kw'>%&gt;%</span>
-        <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/slice.html'>slice</a></span>(<span class='fl'>1</span>:<span class='fl'>50</span>) <span class='kw'>%&gt;%</span>
+        <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/slice.html'>slice</a></span>(<span class='fl'>1</span>:<span class='fl'>50</span>) <span class='kw'>%&gt;%</span>
         <span class='fu'>add_taxonomy_columns</span>(<span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span><span class='st'>"subject_acc_ver"</span> )
 
 <span class='co'>## add species</span>
 <span class='no'>with_kingdom_and_species</span> <span class='kw'>&lt;-</span> <span class='no'>with_kingdom</span> <span class='kw'>%&gt;%</span>
         <span class='fu'>add_taxonomy_columns</span>(<span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span><span class='st'>"subject_acc_ver"</span>,<span class='kw'>taxonomy_level</span> <span class='kw'>=</span> <span class='st'>"species"</span>)
-<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/reexports.html'>glimpse</a></span>(<span class='no'>with_kingdom_and_species</span>)
+<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>glimpse</a></span>(<span class='no'>with_kingdom_and_species</span>)
 
 <span class='co'>#------------------------------------</span>
 <span class='co'>## using parallel processing approach</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>furrr</span>)
 <span class='no'>num_of_splits</span> <span class='kw'>&lt;-</span> <span class='fl'>10</span>
-<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>d</span> <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/slice.html'>slice</a></span>(<span class='fl'>1</span>:<span class='fl'>100</span>)
+<span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='no'>d</span> <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/slice.html'>slice</a></span>(<span class='fl'>1</span>:<span class='fl'>100</span>)
 <span class='no'>split_vec</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>:<span class='no'>num_of_splits</span> , <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>d</span>))
-<span class='no'>qq_split</span> <span class='kw'>&lt;-</span> <span class='no'>d</span> <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/mutate.html'>mutate</a></span>(<span class='kw'>split_vec</span> <span class='kw'>=</span> <span class='no'>split_vec</span>)  <span class='kw'>%&gt;%</span>
-<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/group_by.html'>group_by</a></span>(<span class='no'>split_vec</span>) <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/group_split.html'>group_split</a></span>()
+<span class='no'>qq_split</span> <span class='kw'>&lt;-</span> <span class='no'>d</span> <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>split_vec</span> <span class='kw'>=</span> <span class='no'>split_vec</span>)  <span class='kw'>%&gt;%</span>
+<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span>(<span class='no'>split_vec</span>) <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_split.html'>group_split</a></span>()
 <span class='kw pkg'>future</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/future/man/plan.html'>plan</a></span>(<span class='st'>"multiprocess"</span>)
 <span class='no'>out</span> <span class='kw'>&lt;-</span> <span class='no'>qq_split</span>[<span class='fl'>1</span>:<span class='no'>num_of_splits</span>] <span class='kw'>%&gt;%</span>
         <span class='fu'><a href='https://rdrr.io/pkg/furrr/man/future_map.html'>future_map</a></span>( ~ <span class='kw pkg'>phyloR</span><span class='kw ns'>::</span><span class='fu'>add_taxonomy_columns</span>(<span class='kw'>tbl</span> <span class='kw'>=</span> <span class='no'>..1</span> ,
@@ -223,7 +223,7 @@ To map taxonomy levels for large number of ncbi accession one may choose paralle
  <span class='kw'>ncbi_accession_colname</span> <span class='kw'>=</span> <span class='st'>"subject_acc_ver"</span> , <span class='kw'>batch_size</span> <span class='kw'>=</span> <span class='fl'>20</span>,
  <span class='kw'>ncbi_acc_key</span> <span class='kw'>=</span> <span class='st'>"64c65ab9c52e0312bbcf4c32d3056cbcaa09"</span>),
                    <span class='kw'>.progress</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
-        <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dplyr/man/bind.html'>bind_rows</a></span>()
+        <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/bind.html'>bind_rows</a></span>()
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

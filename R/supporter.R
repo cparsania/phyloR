@@ -56,3 +56,7 @@ null_or_logical <- function(x){
 }
 
 
+extract_ncbi_accession <- function(){
+
+}
+
