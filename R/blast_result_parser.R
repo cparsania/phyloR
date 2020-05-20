@@ -769,7 +769,7 @@ tidy_taxonomy_tree <- function(tree_data,
                                taxonomy_levels = c("species" ,"kingdom")){
 
 
-        rlang::arg_match(taxonomy_levels  , c("no rank", "superkingdom", "kingdom", "phylum", "subphylum", "class", "subclass", "infraclass", "cohort", "order", "suborder", "infraorder", "superfamily", "family", "subfamily", "genus", "species", "tribe"))
+        stopifnot(all(taxonomy_levels %in% c("no rank", "superkingdom", "kingdom", "phylum", "subphylum", "class", "subclass", "infraclass", "cohort", "order", "suborder", "infraorder", "superfamily", "family", "subfamily", "genus", "species", "tribe")))
 
         ## get accession column name
         accession_col_name = rlang::sym(ncbi_accession_colname)
