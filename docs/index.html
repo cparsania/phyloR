@@ -274,7 +274,7 @@
 </div>
 <div id="assign-taxonomy-columns-to-ncbi-protein-acession" class="section level2">
 <h2 class="hasAnchor">
-<a href="#assign-taxonomy-columns-to-ncbi-protein-acession" class="anchor"></a>Assign taxonomy columns to NCBI protein acession.</h2>
+<a href="#assign-taxonomy-columns-to-ncbi-protein-acession" class="anchor"></a>Assign taxonomy columns to NCBI protein acession</h2>
 <p>phyloR allows you to assign NCBI taxonomy levels to NCBI protein accession using function <code><a href="reference/add_taxonomy_columns.html">phyloR::add_taxonomy_columns()</a></code>. One of the applications of this function is to assign the NCBI taxonomy levels to blast output, which is required for downstream phylogenetic analysis. For example, a phylogenetic tree generated from blast hits often required to color resultant tree branches either by kingdom, family or any other NCBI taxonomy level. One can easily identify these taxonomy levels using function <code><a href="reference/add_taxonomy_columns.html">phyloR::add_taxonomy_columns()</a></code></p>
 <div class="sourceCode" id="cb7"><pre class="r">
 <span class="co">## add kingdom</span>
@@ -284,11 +284,11 @@
 <span class="co">#&gt; No ENTREZ API key provided</span>
 <span class="co">#&gt;  Get one via taxize::use_entrez()</span>
 <span class="co">#&gt; See https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/</span>
-<span class="co">#&gt; ✓ Done.  Time taken 6.75</span>
-<span class="co">#&gt; ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ Done.  Time taken 8.75</span>
+<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ● Rank search begins...</span>
-<span class="co">#&gt; ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; ✓ Done.  Time taken 0.07</span>
+<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ Done.  Time taken 0.08</span>
 
 
 <span class="no">with_kingdom</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">query_acc_ver</span>, <span class="no">subject_acc_ver</span>, <span class="no">kingdom</span>)
@@ -310,12 +310,12 @@
 
 <span class="no">with_kingdom_and_family</span> <span class="kw">&lt;-</span> <span class="no">with_kingdom</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/add_taxonomy_columns.html">add_taxonomy_columns</a></span>(<span class="kw">ncbi_accession_colname</span> <span class="kw">=</span> <span class="st">"subject_acc_ver"</span> ,
                                                                   <span class="kw">taxonomy_level</span> <span class="kw">=</span> <span class="st">"family"</span>)
-<span class="co">#&gt; ── WARNING ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.</span>
 <span class="co">#&gt; ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.</span>
-<span class="co">#&gt; ── WARNING ENDS ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ● Rank search begins...</span>
-<span class="co">#&gt; ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ✓ Done.  Time taken 0.05</span>
 
 <span class="no">with_kingdom_and_family</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">query_acc_ver</span>, <span class="no">subject_acc_ver</span>, <span class="no">kingdom</span>, <span class="no">family</span> )
@@ -337,13 +337,13 @@
 
 <span class="no">with_kingdom_family_and_species</span> <span class="kw">&lt;-</span> <span class="no">with_kingdom_and_family</span> <span class="kw">%&gt;%</span> <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/add_taxonomy_columns.html">add_taxonomy_columns</a></span>(<span class="kw">ncbi_accession_colname</span> <span class="kw">=</span> <span class="st">"subject_acc_ver"</span> ,
                                                                   <span class="kw">taxonomy_level</span> <span class="kw">=</span> <span class="st">"species"</span>)
-<span class="co">#&gt; ── WARNING ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ℹ As column 'taxid' present in blast output tbl, same will be used to map taxonomy level.</span>
 <span class="co">#&gt; ℹ To perform new 'taxid' search either remove  or rename columnn 'taxid'.</span>
-<span class="co">#&gt; ── WARNING ENDS ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; ● Rank search begins...</span>
-<span class="co">#&gt; ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; ✓ Done.  Time taken 0.04</span>
+<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ Done.  Time taken 0.05</span>
 
 <span class="no">with_kingdom_family_and_species</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">query_acc_ver</span>, <span class="no">subject_acc_ver</span>, <span class="no">kingdom</span>, <span class="no">family</span> ,<span class="no">species</span>)
 <span class="co">#&gt; # A tibble: 10 x 5</span>
@@ -359,6 +359,55 @@
 <span class="co">#&gt;  8 KAE8371401.1  XP_001214927.1  Fungi   Aspergillaceae Aspergillus terreus     </span>
 <span class="co">#&gt;  9 KAE8371401.1  OQD86157.1      Fungi   Aspergillaceae Penicillium antarcticum </span>
 <span class="co">#&gt; 10 KAE8371401.1  XP_002375911.1  Fungi   Aspergillaceae Aspergillus flavus</span></pre></div>
+</div>
+<div id="use-ncbi-taxonomy-levels-to-color-the-phyloegenetic-tree" class="section level2">
+<h2 class="hasAnchor">
+<a href="#use-ncbi-taxonomy-levels-to-color-the-phyloegenetic-tree" class="anchor"></a>Use NCBI taxonomy levels to color the phyloegenetic tree</h2>
+<p>An object of class <code>phylo</code> is widely used object to visualize the phylogenetic tree in R. To gain more insights from the resultant phylogenetic tree, often tree tips required to color by different levels of taxonomy, for instance species, kingdom or family. Obtaining taxonomy data to use them for tree annotations is not straight forward task and require lots of data wrangling in R. phyloR provides handy way to map such a taxonomy data to the phylogenetic tree. For example, one can convert an object of class <code>phylo</code> to an object of class <code>tibble</code> and vice versa. Once the tibble obtained, phyloR allows to add columns of ncbi taxonomy levels. Resultant tibble can be passed to <code><a href="https://rdrr.io/pkg/ggtree/man/ggtree.html">ggtree::ggtree()</a></code> to visualize the tree and taxonomy levels can be used, for instance, to color the tree tips.</p>
+<div class="sourceCode" id="cb8"><pre class="r">
+<span class="no">tree_string</span> <span class="kw">&lt;-</span> <span class="st">"((XP_005187699_1__Musca_domestica:0.070627277,(XP_019893806_1__Musca_domestica:0.071069674,((XP_013113221_1__Stomoxys_calcitrans:0.1494662042,ACB98719_1__Glossina_morsitans_morsitans:0.3489851076)67.4/100:0.0470213767,XP_013102958_1__Stomoxys_calcitrans:0.1794878827)98.1/100:0.0959227604)88.2/99:0.0323598861)93/99:0.0435291148,((XP_017472861_1__Rhagoletis_zephyria:0.0049337059,XP_017472862_1__Rhagoletis_zephyria:0.0112391294)97.3/100:0.0860969479,(XP_020713236_1__Ceratitis_capitata:0.2642805176,(XP_014102010_1__Bactrocera_oleae:0.1183517872,XP_018784523_1__Bactrocera_latifrons:0.1137567198)29.6/88:0.0758551876)99.9/100:0.247740081)92/100:0.0716529011)34.3/66:2.487103817;"</span>
+
+ <span class="no">tree_objct</span> <span class="kw">&lt;-</span> <span class="kw pkg">treeio</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/treeio/man/reexports.html">read.tree</a></span>(<span class="kw">text</span> <span class="kw">=</span> <span class="no">tree_string</span>)
+
+ <span class="no">tree_tbl</span> <span class="kw">&lt;-</span> <span class="no">tree_objct</span> <span class="kw">%&gt;%</span>
+   <span class="kw pkg">ggtree</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/reexports.html">fortify</a></span>()
+
+ <span class="no">tree_tbl</span> <span class="kw">&lt;-</span> <span class="no">tree_tbl</span>  <span class="kw">%&gt;%</span>
+         <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>( <span class="kw">seqid</span> <span class="kw">=</span>  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span>(<span class="no">isTip</span> ~ <span class="kw pkg">stringr</span><span class="kw ns">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span>(<span class="no">label</span> , <span class="kw">pattern</span> <span class="kw">=</span> <span class="st">"__.*"</span>,<span class="st">""</span> ) <span class="kw">%&gt;%</span>  <span class="co">## split by '__'</span>
+                                                         <span class="kw pkg">stringr</span><span class="kw ns">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span>(<span class="kw">pattern</span> <span class="kw">=</span> <span class="st">"_\\d$"</span> , <span class="st">""</span>), <span class="co">## remove trailing digits from seqid</span>
+                                                  <span class="fl">TRUE</span> ~ <span class="no">label</span>
+         )
+        )
+ <span class="co">## add taxonomy</span>
+ <span class="no">tree_tbl_with_taxonomy</span> <span class="kw">&lt;-</span> <span class="no">tree_tbl</span> <span class="kw">%&gt;%</span>
+        <span class="kw pkg">phyloR</span><span class="kw ns">::</span><span class="fu"><a href="reference/tidy_taxonomy_tree.html">tidy_taxonomy_tree</a></span>(<span class="kw">ncbi_accession_colname</span> <span class="kw">=</span> <span class="st">"seqid"</span>,<span class="kw">taxonomy_levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"species"</span> ,<span class="st">"kingdom"</span>,<span class="st">"family"</span>))
+<span class="co">#&gt; ✓ Done.  Time taken 4.54</span>
+<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ● Rank search begins...</span>
+<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ Done.  Time taken 0.05</span>
+<span class="co">#&gt; ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ● Rank search begins...</span>
+<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ Done.  Time taken 0.05</span>
+<span class="co">#&gt; ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ● Rank search begins...</span>
+<span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ✓ Done.  Time taken 0.06</span>
+
+ <span class="co">## visualize  tree</span>
+
+ <span class="co"># tips colored by species</span>
+ <span class="no">tree_tbl_with_taxonomy</span> <span class="kw">%&gt;%</span> <span class="kw pkg">ggtree</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/ggtree.html">ggtree</a></span>() + <span class="kw pkg">ggtree</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/geom_tiplab.html">geom_tiplab</a></span>(<span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">color</span> <span class="kw">=</span> <span class="no">species</span>, <span class="kw">label</span> <span class="kw">=</span> <span class="no">seqid</span>))</pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-11-1.png" width="100%"></p>
+<div class="sourceCode" id="cb9"><pre class="r"> <span class="co"># tips colored by family</span>
+ <span class="no">tree_tbl_with_taxonomy</span> <span class="kw">%&gt;%</span> <span class="kw pkg">ggtree</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/ggtree.html">ggtree</a></span>() + <span class="kw pkg">ggtree</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/geom_tiplab.html">geom_tiplab</a></span>(<span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">color</span> <span class="kw">=</span> <span class="no">family</span>,<span class="kw">label</span> <span class="kw">=</span> <span class="no">seqid</span>))</pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-11-2.png" width="100%"></p>
+<div class="sourceCode" id="cb10"><pre class="r"> <span class="co"># tips colored by kingdom</span>
+ <span class="no">tree_tbl_with_taxonomy</span> <span class="kw">%&gt;%</span> <span class="kw pkg">ggtree</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/ggtree.html">ggtree</a></span>() + <span class="kw pkg">ggtree</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/geom_tiplab.html">geom_tiplab</a></span>(<span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">color</span> <span class="kw">=</span> <span class="no">kingdom</span>,<span class="kw">label</span> <span class="kw">=</span> <span class="no">seqid</span>))</pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-11-3.png" width="100%"></p>
 </div>
 </div>
   </div>
