@@ -264,7 +264,7 @@ with_kingdom <- blast_out_tbl %>% slice(1:10) %>%
 #> No ENTREZ API key provided
 #>  Get one via taxize::use_entrez()
 #> See https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
-#> ✓ Done.  Time taken 8.75
+#> ✓ Done.  Time taken 5.23
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -323,7 +323,7 @@ with_kingdom_family_and_species <- with_kingdom_and_family %>% phyloR::add_taxon
 #> ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ Done.  Time taken 0.05
+#> ✓ Done.  Time taken 0.04
 
 with_kingdom_family_and_species %>% dplyr::select(query_acc_ver, subject_acc_ver, kingdom, family ,species)
 #> # A tibble: 10 x 5
@@ -374,7 +374,7 @@ tree_string <- "((XP_005187699_1__Musca_domestica:0.070627277,(XP_019893806_1__M
  ## add taxonomy
  tree_tbl_with_taxonomy <- tree_tbl %>%
         phyloR::tidy_taxonomy_tree(ncbi_accession_colname = "seqid",taxonomy_levels = c("species" ,"kingdom","family"))
-#> ✓ Done.  Time taken 4.54
+#> ✓ Done.  Time taken 3.3
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -383,31 +383,34 @@ tree_string <- "((XP_005187699_1__Musca_domestica:0.070627277,(XP_019893806_1__M
 #> ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ Done.  Time taken 0.05
+#> ✓ Done.  Time taken 0.04
 #> ── WARNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ── WARNING ENDS ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> ● Rank search begins...
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> ✓ Done.  Time taken 0.06
+#> ✓ Done.  Time taken 0.07
 
  ## visualize  tree
 
  # tips colored by species
- tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = species, label = seqid))
+ tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = species, label = seqid),size = 20) + 
+   ggplot2::theme(legend.position = "bottom" , legend.text = ggplot2::element_text(size= 50) , legend.title = ggplot2::element_text(size= 50))
 ```
 
 <img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
 
 ``` r
  # tips colored by family
- tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = family,label = seqid))
+ tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = family,label = seqid),size = 20) +
+   ggplot2::theme(legend.position = "bottom" , legend.text = ggplot2::element_text(size= 50) , legend.title = ggplot2::element_text(size= 50))
 ```
 
 <img src="man/figures/README-unnamed-chunk-11-2.png" width="100%" />
 
 ``` r
  # tips colored by kingdom
- tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = kingdom,label = seqid))
+ tree_tbl_with_taxonomy %>% ggtree::ggtree() + ggtree::geom_tiplab(ggplot2::aes(color = kingdom,label = seqid ),size =20) +
+   ggplot2::theme(legend.position = "bottom" , legend.text = ggplot2::element_text(size= 50) , legend.title = ggplot2::element_text(size= 50))
 ```
 
 <img src="man/figures/README-unnamed-chunk-11-3.png" width="100%" />
