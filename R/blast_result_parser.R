@@ -108,6 +108,7 @@ get_taxon_rank <-  function(x , rank = "kingdom"){
         cli::cat_rule()
         result_ranks <- taxizedb::classification(x$query_taxon)  %>%
                 tibble::tibble(taxid = names(.) , all_ranks = .) %>%
+                purrr::map(~.) %>%
                 tidyr::unnest(cols = all_ranks) %>%
                 dplyr::filter(.$rank == !!rank)
         time_taken <- (lubridate::now() - start_time) %>% round(2)
