@@ -793,3 +793,28 @@ tidy_taxonomy_tree <- function(tree_data,
 
 }
 
+
+#' Retrieve tree tips by clade (node) number from a phylogenetic tree.
+#' @description You can subset tree tips by node / clade number from a given tree.
+#' @param x an object of a class phylo.
+#' @param y a numerical vector denoting tree nodes.
+#'
+#' @return a tibble with two columns 1) tips 2) clade_id
+#' @export
+#'
+#' @examples
+#'
+tips_by_clade <- function(x, y){
+        .tips_by_clade <- purrr::as_mapper(~ treeio::tree_subset(x, ..1,levels_back=0) %>%
+                                                   ggtree::fortify() %>%
+                                                   dplyr::filter(isTip) %>%
+                                                   dplyr::mutate(tips = label , clade_id = ..1) %>%
+                                                   dplyr::select(tips,clade_id)
+
+        )
+
+        purrr::map(y , .tips_by_clade) %>% dplyr::bind_rows()
+
+}
+
+
