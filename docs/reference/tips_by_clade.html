@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • phyloR</title>
+<title>Retrieve tree tips by clade (node) number from a phylogenetic tree. — tips_by_clade • phyloR</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Retrieve tree tips by clade (node) number from a phylogenetic tree. — tips_by_clade" />
+<meta property="og:description" content="You can subset tree tips by node / clade number from a given tree." />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -105,108 +106,40 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Retrieve tree tips by clade (node) number from a phylogenetic tree.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cparsania/phyloR/blob/master/R/blast_result_parser.R'><code>R/blast_result_parser.R</code></a></small>
+    <div class="hidden name"><code>tips_by_clade.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>You can subset tree tips by node / clade number from a given tree.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>tips_by_clade</span>(<span class='no'>x</span>, <span class='no'>y</span>)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="add_taxonomy_columns.html">add_taxonomy_columns()</a></code> </p>
-        </td>
-        <td><p>Add ncbi taxonomy levels to ncbi protein accession</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="filter_blast_hits.html">filter_blast_hits()</a></code> </p>
-        </td>
-        <td><p>Filter blast hits</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="format_fasta_headers.html">format_fasta_headers()</a></code> </p>
-        </td>
-        <td><p>Format fasta headers</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="genbank2uid_tbl.html">genbank2uid_tbl()</a></code> </p>
-        </td>
-        <td><p>A Wrapper function around taxize::genbank2uid.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_blast_outformat_7_colnames.html">get_blast_outformat_7_colnames()</a></code> </p>
-        </td>
-        <td><p>Get blast output format 7 column names</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_query_cov.html">get_query_cov()</a></code> </p>
-        </td>
-        <td><p>Calculate % query coverage.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_subj_cov.html">get_subj_cov()</a></code> </p>
-        </td>
-        <td><p>Calculate % subject coverage.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_taxon_rank.html">get_taxon_rank()</a></code> </p>
-        </td>
-        <td><p>Get ncbi phylogeny level for a given ncbi taxonomy id.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="remove_redundant_hits.html">remove_redundant_hits()</a></code> </p>
-        </td>
-        <td><p>Remove redundant hits from blast tabular output</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="subset_bstringset.html">subset_bstringset()</a></code> </p>
-        </td>
-        <td><p>Get records from BStringset</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tidy_taxonomy_tree.html">tidy_taxonomy_tree()</a></code> </p>
-        </td>
-        <td><p>Assign (NCBI) taxonomy levels to phylo convertible tibble.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tips_by_clade.html">tips_by_clade()</a></code> </p>
-        </td>
-        <td><p>Retrieve tree tips by clade (node) number from a phylogenetic tree.</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>an object of a class phylo.</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>a numerical vector denoting tree nodes.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a tibble with two columns 1) tips 2) clade_id</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
