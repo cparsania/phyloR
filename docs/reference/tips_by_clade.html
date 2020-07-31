@@ -137,8 +137,12 @@
     <p>a tibble with two columns 1) tips 2) clade_id</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='no'>tree_text</span> <span class='kw'>&lt;-</span> <span class='st'>"((XP_005187699_1__Musca_domestica:0.070627277,(XP_019893806_1__Musca_domestica:0.071069674,((XP_013113221_1__Stomoxys_calcitrans:0.1494662042,ACB98719_1__Glossina_morsitans_morsitans:0.3489851076)67.4/100:0.0470213767,XP_013102958_1__Stomoxys_calcitrans:0.1794878827)98.1/100:0.0959227604)88.2/99:0.0323598861)93/99:0.0435291148,((XP_017472861_1__Rhagoletis_zephyria:0.0049337059,XP_017472862_1__Rhagoletis_zephyria:0.0112391294)97.3/100:0.0860969479,(XP_020713236_1__Ceratitis_capitata:0.2642805176,(XP_014102010_1__Bactrocera_oleae:0.1183517872,XP_018784523_1__Bactrocera_latifrons:0.1137567198)29.6/88:0.0758551876)99.9/100:0.247740081)92/100:0.0716529011)34.3/66:2.487103817;"</span>
+<span class='no'>tr</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>treeio</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/treeio/man/reexports.html'>read.tree</a></span>(<span class='kw'>text</span> <span class='kw'>=</span> <span class='no'>tree_text</span>)
+<span class='kw pkg'>ggtree</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ggtree/man/ggtree.html'>ggtree</a></span>(<span class='no'>tr</span>) + <span class='kw pkg'>ggtree</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ggtree/man/geom_nodelab.html'>geom_nodelab</a></span>(<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>label</span> <span class='kw'>=</span> <span class='no'>node</span>)) + <span class='kw pkg'>ggtree</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ggtree/man/geom_tiplab.html'>geom_tiplab</a></span>()
+<span class='no'>tips_subset</span> <span class='kw'>&lt;-</span> <span class='fu'>tips_by_clade</span>(<span class='no'>tr</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>15</span>, <span class='fl'>18</span>))
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

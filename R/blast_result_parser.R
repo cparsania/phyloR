@@ -803,7 +803,14 @@ tidy_taxonomy_tree <- function(tree_data,
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
+#' tree_text <- "((XP_005187699_1__Musca_domestica:0.070627277,(XP_019893806_1__Musca_domestica:0.071069674,((XP_013113221_1__Stomoxys_calcitrans:0.1494662042,ACB98719_1__Glossina_morsitans_morsitans:0.3489851076)67.4/100:0.0470213767,XP_013102958_1__Stomoxys_calcitrans:0.1794878827)98.1/100:0.0959227604)88.2/99:0.0323598861)93/99:0.0435291148,((XP_017472861_1__Rhagoletis_zephyria:0.0049337059,XP_017472862_1__Rhagoletis_zephyria:0.0112391294)97.3/100:0.0860969479,(XP_020713236_1__Ceratitis_capitata:0.2642805176,(XP_014102010_1__Bactrocera_oleae:0.1183517872,XP_018784523_1__Bactrocera_latifrons:0.1137567198)29.6/88:0.0758551876)99.9/100:0.247740081)92/100:0.0716529011)34.3/66:2.487103817;"
+#'tr <- treeio::read.tree(text = tree_text)
+#'ggtree::ggtree(tr) + ggtree::geom_nodelab(ggplot2::aes(label = node)) + ggtree::geom_tiplab()
+
+## subset tips of node 18 and 15
+#'tips_subset <- tips_by_clade(tr, c(15, 18))
+#' }
 tips_by_clade <- function(x, y){
         .tips_by_clade <- purrr::as_mapper(~ treeio::tree_subset(x, ..1,levels_back=0) %>%
                                                    ggtree::fortify() %>%
